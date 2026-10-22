@@ -12,7 +12,7 @@ Repositorio del micro-frontend de **Descubrimiento** para el proyecto conjunto *
 - **Integrantes:**
   - Daniel Molina Vitón (Responsable)
   - Mario González Baranda
-  - [Nombre y Apellidos Integrante 3]
+  - Juan Cruz Romero
   - [Nombre y Apellidos Integrante 4]
   - [Nombre y Apellidos Integrante 5]
 
