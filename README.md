@@ -14,7 +14,7 @@ Repositorio del micro-frontend de **Descubrimiento** para el proyecto conjunto *
   - Mario González Baranda
   - Juan Cruz Romero
   - Jaime Moraleda Loran
-  - [Nombre y Apellidos Integrante 5]
+  - Jaime Nicolás Mas
 
 ---
 
