@@ -67,6 +67,7 @@ json
   "items": [{ "productId": "prod-101", "sku": "TSHIRT-BLUE-M", "quantity": 2 }],
   "totalItems": 2
 }
+
 Dudas para negociar el lunes
 ¿Compra confirma que se ha añadido el producto (o avisa de un error, como falta de stock), o damos por hecho que siempre se añade?
 ¿El nombre ucjc:session:changed encaja con lo que propone Identidad?
