@@ -20,21 +20,54 @@ Repositorio del micro-frontend de **Descubrimiento** para el proyecto conjunto *
 
 ## 2. Borrador de Contrato de Eventos (Propuesta v1)
 
-La comunicación se realiza exclusivamente mediante eventos desacoplados del DOM (`window.dispatchEvent` / `window.addEventListener`) utilizando `CustomEvent`.
+La comunicación se realiza exclusivamente mediante eventos del DOM (window.dispatchEvent / window.addEventListener) con CustomEvent. Los nombres siguen el formato ucjc:<dominio>:<acción> y todos los payloads incluyen un campo version para poder evolucionar el contrato.
 
-### Eventos Emitidos (Outbound)
+Eventos Emitidos (Outbound)
+ucjc:cart:add-item
 
-#### 1. `ucjc:cart:add-item`
-Emitido cuando el usuario pulsa en «Añadir al carrito» desde el catálogo o la ficha de producto.
-- **Destinatario principal:** Micro-frontend de *Compra*.
-- **Payload (`event.detail`):**
-```json
+Emitido cuando el usuario pulsa «Añadir al carrito» desde el catálogo o la ficha de producto.
+
+Destinatario: Compra.
+Payload (event.detail):
+json
 {
+  "version": 1,
   "productId": "prod-101",
+  "sku": "TSHIRT-BLUE-M",
   "name": "Camiseta Técnica UCJC",
   "price": 19.99,
   "currency": "EUR",
   "quantity": 1,
-  "sku": "TSHIRT-BLUE-M",
-  "imageUrl": "[https://example.com/images/prod-101.jpg](https://example.com/images/prod-101.jpg)"
+  "imageUrl": "https://example.com/images/prod-101.jpg"
 }
+Eventos Consumidos (Inbound)
+ucjc:session:changed
+
+Emitido por Identidad al iniciar o cerrar sesión. Descubrimiento lo usa para saludar al usuario y, en el futuro, mostrar precios para alumnos.
+
+Emisor: Identidad.
+Payload esperado (event.detail):
+json
+{
+  "version": 1,
+  "isAuthenticated": true,
+  "userId": "user-123",
+  "name": "Ana López",
+  "role": "student"
+}
+ucjc:cart:updated (opcional)
+
+Emitido por Compra cuando cambia el carrito. Descubrimiento lo usa para marcar «Ya en tu carrito» en el catálogo y en la ficha.
+
+Emisor: Compra.
+Payload esperado (event.detail):
+json
+{
+  "version": 1,
+  "items": [{ "productId": "prod-101", "sku": "TSHIRT-BLUE-M", "quantity": 2 }],
+  "totalItems": 2
+}
+Dudas para negociar el lunes
+¿Compra confirma que se ha añadido el producto (o avisa de un error, como falta de stock), o damos por hecho que siempre se añade?
+¿El nombre ucjc:session:changed encaja con lo que propone Identidad?
+¿El precio va en euros con decimales (19.99) o en céntimos (1999)?
