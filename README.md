@@ -21,27 +21,21 @@ Repositorio del micro-frontend de **Descubrimiento** para el proyecto conjunto *
 ## 2. Borrador de Contrato de Eventos (Propuesta v1)
 
 La comunicación se realiza exclusivamente mediante eventos del DOM (window.dispatchEvent / window.addEventListener) con CustomEvent.
-
 Formato de los nombres: ucjc:dominio:accion (por ejemplo, ucjc:cart:add-item).
-
 Versión: todos los payloads incluyen un campo version para poder evolucionar el contrato.
 
 **Resumen:**
 
 Evento	Tipo	Emisor	Receptor
-
 ucjc:cart:add-item	Emitido	Descubrimiento	Compra
-
 ucjc:session:changed	Consumido	Identidad	Descubrimiento
-
 ucjc:cart:updated	Consumido (opcional)	Compra	Descubrimiento
 
 **Eventos Emitidos (Outbound)**
-
 Evento: ucjc:cart:add-item. Emitido cuando el usuario pulsa «Añadir al carrito» desde el catálogo o la ficha de producto.
 Destinatario: Compra.
 
-Payload (event.detail):
+**Payload (event.detail):**
 
 json
 
@@ -58,11 +52,12 @@ json
 
   
 
-2.2 Eventos Consumidos (Inbound)
+**Eventos Consumidos (Inbound)**
 
 Evento: ucjc:session:changed. Emitido por Identidad al iniciar o cerrar sesión. Descubrimiento lo usa para saludar al usuario y, en el futuro, mostrar precios para alumnos.
 Emisor: Identidad.
-Payload esperado (event.detail):
+
+**Payload esperado (event.detail):**
 
 json
 {
@@ -74,13 +69,12 @@ json
 }
 
 
-Evento: ucjc:cart:updated. 
+**Evento: ucjc:cart:updated.**
 
 Emitido por Compra cuando cambia el carrito. Descubrimiento lo usa para marcar «Ya en tu carrito» en el catálogo y en la ficha.
-
 Emisor: Compra.
 
-Payload esperado (event.detail):
+**Payload esperado (event.detail):**
 
 json
 {
