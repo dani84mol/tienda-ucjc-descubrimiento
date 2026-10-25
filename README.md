@@ -92,5 +92,7 @@ json
 **Dudas para negociar el lunes**
 
 ¿Compra confirma que se ha añadido el producto (o avisa de un error, como falta de stock), o damos por hecho que siempre se añade?
+
 ¿El nombre ucjc:session:changed encaja con lo que propone Identidad?
+
 ¿El precio va en euros con decimales (19.99) o en céntimos (1999)?
