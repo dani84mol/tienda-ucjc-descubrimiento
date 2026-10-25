@@ -26,7 +26,7 @@ Formato de los nombres: ucjc:dominio:accion (por ejemplo, ucjc:cart:add-item).
 
 Versión: todos los payloads incluyen un campo version para poder evolucionar el contrato.
 
-Resumen:
+**Resumen:**
 
 Evento	Tipo	Emisor	Receptor
 
@@ -36,7 +36,7 @@ ucjc:session:changed	Consumido	Identidad	Descubrimiento
 
 ucjc:cart:updated	Consumido (opcional)	Compra	Descubrimiento
 
-2.1 Eventos Emitidos (Outbound)
+**Eventos Emitidos (Outbound)**
 
 Evento: ucjc:cart:add-item. Emitido cuando el usuario pulsa «Añadir al carrito» desde el catálogo o la ficha de producto.
 Destinatario: Compra.
@@ -44,16 +44,19 @@ Destinatario: Compra.
 Payload (event.detail):
 
 json
+
 {
-  "version": 1,
-  "productId": "prod-101",
+  "version":1,
+  "productId: "prod-101"
   "sku": "TSHIRT-BLUE-M",
-  "name": "Camiseta Técnica UCJC",
+  "name": "Camiseta Técnica UCJC"
   "price": 19.99,
   "currency": "EUR",
   "quantity": 1,
   "imageUrl": "https://example.com/images/prod-101.jpg"
 }
+
+  
 
 2.2 Eventos Consumidos (Inbound)
 
