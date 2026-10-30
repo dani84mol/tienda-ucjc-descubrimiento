@@ -5,7 +5,7 @@ import { ESTILOS } from './estilos.js';
   Estructura de la página:
 
   ┌──────────────────────────────────────────────┐
-  │  [ Buscar productos...            ] [Buscar] │  ← barra de búsqueda
+  │ [Usuario] [ Buscar productos... ][Buscar] [Carrito] │  ← barra superior
   ├──────────────────────────────────────────────┤
   │  Todo | Ropa | Deporte | Material | Regalos  │  ← navegación por categorías
   ├────────────┬─────────────────────────────────┤
@@ -16,7 +16,13 @@ import { ESTILOS } from './estilos.js';
   │ [Limpiar]  │  │[Añad]│ │[Añad]│ │[Añad]│     │
   └────────────┴─────────────────────────────────┘
 
-  El login y el carrito NO van aquí: son de los equipos de Identidad y Compra.
+  Los huecos de Usuario y Carrito son <slot>: Descubrimiento solo deja el sitio.
+  El contenido lo ponen los equipos de Identidad y Compra, por ejemplo:
+
+    <ucjc-descubrimiento>
+      <ucjc-identidad slot="usuario"></ucjc-identidad>
+      <ucjc-compra slot="carrito"></ucjc-compra>
+    </ucjc-descubrimiento>
 */
 
 const PRECIO_MAXIMO = 60;
@@ -49,10 +55,22 @@ class UcjcDescubrimiento extends HTMLElement {
     this.shadowRoot.innerHTML = `
       <style>${ESTILOS}</style>
 
-      <form class="barra-busqueda" role="search">
-        <input type="search" name="q" placeholder="Buscar productos..." aria-label="Buscar productos" />
-        <button type="submit">Buscar</button>
-      </form>
+      <header class="barra-superior">
+        <!-- Hueco izquierdo: aquí irá el componente de Identidad (usuario) -->
+        <div class="lateral lateral-izq">
+          <slot name="usuario"><span class="hueco">Usuario</span></slot>
+        </div>
+
+        <form class="barra-busqueda" role="search">
+          <input type="search" name="q" placeholder="Buscar productos..." aria-label="Buscar productos" />
+          <button type="submit">Buscar</button>
+        </form>
+
+        <!-- Hueco derecho: aquí irá el componente de Compra (carrito) -->
+        <div class="lateral lateral-der">
+          <slot name="carrito"><span class="hueco">Carrito</span></slot>
+        </div>
+      </header>
 
       <nav class="navegacion" aria-label="Categorías">
         <button data-categoria="todo" aria-current="true">Todo</button>

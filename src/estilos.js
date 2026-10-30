@@ -13,12 +13,31 @@ export const ESTILOS = `
 
   * { box-sizing: border-box; }
 
-  /* ---------- Barra superior: buscador ---------- */
+  /* ---------- Barra superior: usuario | buscador | carrito ---------- */
+  .barra-superior {
+    display: grid;
+    grid-template-columns: 160px 1fr 160px;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--azul);
+  }
+  .lateral { display: flex; align-items: center; min-height: 2.5rem; }
+  .lateral-izq { justify-content: flex-start; }
+  .lateral-der { justify-content: flex-end; }
+  .hueco {
+    padding: .5rem .9rem;
+    border: 1px dashed rgba(255, 255, 255, .6);
+    border-radius: 6px;
+    color: white;
+    font-size: .9rem;
+  }
   .barra-busqueda {
     display: flex;
     gap: .5rem;
-    padding: 1rem;
-    background: var(--azul);
+    max-width: 640px;
+    width: 100%;
+    margin: 0 auto;
   }
   .barra-busqueda input {
     flex: 1;
@@ -157,5 +176,8 @@ export const ESTILOS = `
   /* ---------- Móvil: los filtros pasan arriba ---------- */
   @media (max-width: 700px) {
     .cuerpo { grid-template-columns: 1fr; }
+    /* Usuario y carrito arriba, buscador debajo ocupando todo el ancho */
+    .barra-superior { grid-template-columns: 1fr 1fr; }
+    .barra-busqueda { grid-column: 1 / -1; grid-row: 2; }
   }
 `;
