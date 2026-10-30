@@ -1,4 +1,4 @@
-// Estilos del componente. Van dentro del Shadow DOM, así no chocan con los de otros equipos.
+// Estilos del componente. Van dentro del Shadow DOM, así no chocan con los de otros equipos[cite: 2].
 export const ESTILOS = `
   :host {
     --azul: #1e3a8a;
@@ -176,8 +176,103 @@ export const ESTILOS = `
   /* ---------- Móvil: los filtros pasan arriba ---------- */
   @media (max-width: 700px) {
     .cuerpo { grid-template-columns: 1fr; }
-    /* Usuario y carrito arriba, buscador debajo ocupando todo el ancho */
     .barra-superior { grid-template-columns: 1fr 1fr; }
     .barra-busqueda { grid-column: 1 / -1; grid-row: 2; }
+  }
+
+  /* ---------- Ventana Modal (Detalle de Producto) ---------- */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5); /* Fondo sombreado en segundo plano */
+    display: grid;
+    place-items: center;
+    z-index: 1000;
+  }
+
+  .modal-contenido {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .modal-contenido h3 {
+    margin: 0;
+    color: var(--azul);
+    font-size: 1.5rem;
+  }
+
+  .modal-contenido .precio {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--azul);
+  }
+
+  .btn-cerrar-modal {
+    margin-top: 1rem;
+    padding: 0.6rem;
+    background: var(--azul);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  /* ---------- Estilos de Administración / Roles ---------- */
+  .barra-admin {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #eff6ff;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--borde);
+  }
+
+  .btn-admin {
+    background: var(--azul-claro);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .acciones-tarjeta-admin {
+    display: flex;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+  }
+
+  .btn-editar {
+    background: #f59e0b;
+    color: white;
+    border: none;
+    padding: 0.4rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    flex: 1;
+  }
+
+  .btn-eliminar {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 0.4rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    flex: 1;
   }
 `;

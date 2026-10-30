@@ -1,30 +1,6 @@
 import { CATEGORIAS, TALLAS, PRODUCTOS } from './productos.js';
 import { ESTILOS } from './estilos.js';
 
-/*
-  Estructura de la página:
-
-  ┌──────────────────────────────────────────────┐
-  │ [Usuario] [ Buscar productos... ][Buscar] [Carrito] │  ← barra superior
-  ├──────────────────────────────────────────────┤
-  │  Todo | Ropa | Deporte | Material | Regalos  │  ← navegación por categorías
-  ├────────────┬─────────────────────────────────┤
-  │ FILTROS    │  8 productos       [Ordenar ▼]  │
-  │ Categoría  │  ┌──────┐ ┌──────┐ ┌──────┐     │
-  │ Precio     │  │ foto │ │ foto │ │ foto │     │  ← rejilla de productos
-  │ Talla      │  │[Ver] │ │[Ver] │ │[Ver] │     │
-  │ [Limpiar]  │  │[Añad]│ │[Añad]│ │[Añad]│     │
-  └────────────┴─────────────────────────────────┘
-
-  Los huecos de Usuario y Carrito son <slot>: Descubrimiento solo deja el sitio.
-  El contenido lo ponen los equipos de Identidad y Compra, por ejemplo:
-
-    <ucjc-descubrimiento>
-      <ucjc-identidad slot="usuario"></ucjc-identidad>
-      <ucjc-compra slot="carrito"></ucjc-compra>
-    </ucjc-descubrimiento>
-*/
-
 const PRECIO_MAXIMO = 60;
 
 class UcjcDescubrimiento extends HTMLElement {
@@ -41,36 +17,50 @@ class UcjcDescubrimiento extends HTMLElement {
       precioMax: PRECIO_MAXIMO,
       tallas: [],
       orden: 'relevancia',
+      productoSeleccionado: null,
+      usuarioActivo: null,
+      esAdmin: false,
+      listaProductos: [...PRODUCTOS],
     };
   }
 
   connectedCallback() {
     this.pintarEstructura();
     this.conectarEventos();
+    this.escucharSesion();
     this.pintarProductos();
   }
 
-  // ---------- Estructura fija de la página ----------
+  // Escuchar cambios de sesión del equipo de Identidad
+  escucharSesion() {
+    window.addEventListener('ucjc:session:changed', (e) => {
+      const detalle = e.detail || {};
+      this.estado.usuarioActivo = detalle.user || null;
+      this.estado.esAdmin = detalle.role === 'admin' || detalle.esAdmin === true;
+      
+      this.actualizarBarraAdmin();
+      this.pintarProductos();
+    });
+  }
+
   pintarEstructura() {
     this.shadowRoot.innerHTML = `
       <style>${ESTILOS}</style>
 
       <header class="barra-superior">
-        <!-- Hueco izquierdo: aquí irá el componente de Identidad (usuario) -->
         <div class="lateral lateral-izq">
           <slot name="usuario"><span class="hueco">Usuario</span></slot>
         </div>
-
         <form class="barra-busqueda" role="search">
           <input type="search" name="q" placeholder="Buscar productos..." aria-label="Buscar productos" />
           <button type="submit">Buscar</button>
         </form>
-
-        <!-- Hueco derecho: aquí irá el componente de Compra (carrito) -->
         <div class="lateral lateral-der">
           <slot name="carrito"><span class="hueco">Carrito</span></slot>
         </div>
       </header>
+
+      <div id="admin-bar-container"></div>
 
       <nav class="navegacion" aria-label="Categorías">
         <button data-categoria="todo" aria-current="true">Todo</button>
@@ -86,19 +76,16 @@ class UcjcDescubrimiento extends HTMLElement {
             `).join('')}
             <label><input type="radio" name="categoria" value="todo" checked /> Todas</label>
           </section>
-
           <section>
             <h3>Precio máximo: <span class="valor-precio">${PRECIO_MAXIMO} €</span></h3>
             <input type="range" name="precio" min="0" max="${PRECIO_MAXIMO}" step="5" value="${PRECIO_MAXIMO}" aria-label="Precio máximo" />
           </section>
-
           <section>
             <h3>Talla</h3>
             <div class="tallas">
               ${TALLAS.map((t) => `<button type="button" data-talla="${t}" aria-pressed="false">${t}</button>`).join('')}
             </div>
           </section>
-
           <button type="button" class="limpiar">Limpiar filtros</button>
         </aside>
 
@@ -115,10 +102,80 @@ class UcjcDescubrimiento extends HTMLElement {
           <div class="rejilla"></div>
         </main>
       </div>
+
+      <div id="modal-container"></div>
+    `;
+
+    this.actualizarBarraAdmin();
+    this.actualizarModal();
+  }
+
+  actualizarBarraAdmin() {
+    const contenedorAdmin = this.shadowRoot.querySelector('#admin-bar-container');
+    if (!this.estado.esAdmin) {
+      contenedorAdmin.innerHTML = '';
+      return;
+    }
+
+    contenedorAdmin.innerHTML = `
+      <div class="barra-admin">
+        <span>⚙️ Panel de Administración activo (${this.estado.usuarioActivo?.name || 'Admin'})</span>
+        <button type="button" class="btn-admin" data-accion="nuevo-producto">+ Añadir Producto</button>
+      </div>
     `;
   }
 
-  // ---------- Botones y filtros ----------
+  actualizarModal() {
+    const contenedorModal = this.shadowRoot.querySelector('#modal-container');
+    const prod = this.estado.productoSeleccionado;
+
+    if (!prod) {
+      contenedorModal.innerHTML = '';
+      return;
+    }
+
+    const esNuevo = prod.id === 'nuevo';
+
+    // Nota: Eliminado el onclick inline para dejar que el evento suba correctamente al listener global
+    contenedorModal.innerHTML = `
+      <div class="modal-overlay" data-accion="cerrar">
+        <div class="modal-contenido" role="dialog" aria-modal="true">
+          <h3>${esNuevo ? 'Añadir Nuevo Producto' : prod.nombre}</h3>
+          ${
+            this.estado.esAdmin && (esNuevo || prod.editando)
+              ? `
+                <form id="form-producto" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                  <label>Nombre: <input type="text" name="nombre" value="${esNuevo ? '' : prod.nombre}" required style="width:100%; padding:0.4rem;" /></label>
+                  <label>Precio (€): <input type="number" step="0.01" name="precio" value="${esNuevo ? '' : prod.precio}" required style="width:100%; padding:0.4rem;" /></label>
+                  <label>Categoría: 
+                    <select name="categoria" style="width:100%; padding:0.4rem;">
+                      ${CATEGORIAS.map((c) => `<option value="${c.id}" ${prod.categoria === c.id ? 'selected' : ''}>${c.nombre}</option>`).join('')}
+                    </select>
+                  </label>
+                  <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                    <button type="submit" class="btn-admin" style="flex:1;">Guardar</button>
+                    <button type="button" class="btn-cerrar-modal" data-accion="cerrar" style="flex:1; margin-top:0;">Cancelar</button>
+                  </div>
+                </form>
+              `
+              : `
+                <p class="precio">${prod.precio.toFixed(2).replace('.', ',')} €</p>
+                <p><strong>Categoría:</strong> ${prod.categoria}</p>
+                <p><strong>Tallas disponibles:</strong> ${prod.tallas.length > 0 ? prod.tallas.join(', ') : 'Única'}</p>
+                <p>Vista detallada del producto dentro del micro-frontend de Descubrimiento.</p>
+                ${
+                  this.estado.esAdmin
+                    ? `<button type="button" class="btn-admin" data-accion="pasar-a-editar" style="margin-top:0.5rem;">Modificar / Editar este producto</button>`
+                    : ''
+                }
+                <button type="button" class="btn-cerrar-modal" data-accion="cerrar">Cerrar</button>
+              `
+          }
+        </div>
+      </div>
+    `;
+  }
+
   conectarEventos() {
     const raiz = this.shadowRoot;
 
@@ -162,12 +219,86 @@ class UcjcDescubrimiento extends HTMLElement {
 
     raiz.querySelector('.limpiar').addEventListener('click', () => this.limpiarFiltros());
 
+    raiz.addEventListener('click', (e) => {
+      const btnAdmin = e.target.closest('[data-accion="nuevo-producto"]');
+      if (btnAdmin) {
+        this.estado.productoSeleccionado = { id: 'nuevo', nombre: '', precio: 0, categoria: 'ropa', tallas: [] };
+        this.actualizarModal();
+      }
+    });
+
     raiz.querySelector('.rejilla').addEventListener('click', (e) => {
       const boton = e.target.closest('button[data-accion]');
       if (!boton) return;
-      const producto = PRODUCTOS.find((p) => p.id === boton.dataset.id);
+      const id = boton.dataset.id;
+      const producto = this.estado.listaProductos.find((p) => p.id === id);
+
       if (boton.dataset.accion === 'anadir') this.anadirAlCarrito(producto);
-      if (boton.dataset.accion === 'ver') console.log('Ficha de producto (pendiente):', producto.id);
+      if (boton.dataset.accion === 'ver') {
+        this.estado.productoSeleccionado = { ...producto, editando: false };
+        this.actualizarModal();
+      }
+      if (boton.dataset.accion === 'editar') {
+        this.estado.productoSeleccionado = { ...producto, editando: true };
+        this.actualizarModal();
+      }
+      if (boton.dataset.accion === 'eliminar') {
+        if (confirm(`¿Estás seguro de eliminar "${producto.nombre}"?`)) {
+          this.estado.listaProductos = this.estado.listaProductos.filter((p) => p.id !== id);
+          this.pintarProductos();
+        }
+      }
+    });
+
+    // Gestión limpia de eventos del modal (Cierre por botón o fondo, y edición)
+    raiz.querySelector('#modal-container').addEventListener('click', (e) => {
+      // Si hacen clic en la caja blanca de dentro del modal, no cerramos
+      if (e.target.closest('.modal-contenido') && !e.target.closest('[data-accion="cerrar"]')) {
+        // Comprobamos si es el botón de pasar a editar dentro del modal
+        const accionEditar = e.target.closest('[data-accion="pasar-a-editar"]');
+        if (accionEditar) {
+          this.estado.productoSeleccionado.editando = true;
+          this.actualizarModal();
+        }
+        return;
+      }
+
+      // En cualquier otro caso (fondo sombreado o botón con data-accion="cerrar"), cerramos el modal
+      this.estado.productoSeleccionado = null;
+      this.actualizarModal();
+    });
+
+    raiz.querySelector('#modal-container').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (e.target.id === 'form-producto') {
+        const formData = new FormData(e.target);
+        const nombre = formData.get('nombre');
+        const precio = parseFloat(formData.get('precio'));
+        const categoria = formData.get('categoria');
+
+        if (this.estado.productoSeleccionado.id === 'nuevo') {
+          const nuevoProd = {
+            id: `prod-${Date.now()}`,
+            nombre,
+            precio,
+            categoria,
+            tallas: ['M', 'L'],
+          };
+          this.estado.listaProductos.push(nuevoProd);
+        } else {
+          const idActual = this.estado.productoSeleccionado.id;
+          const prod = this.estado.listaProductos.find((p) => p.id === idActual);
+          if (prod) {
+            prod.nombre = nombre;
+            prod.precio = precio;
+            prod.categoria = categoria;
+          }
+        }
+
+        this.estado.productoSeleccionado = null;
+        this.actualizarModal();
+        this.pintarProductos();
+      }
     });
   }
 
@@ -192,11 +323,9 @@ class UcjcDescubrimiento extends HTMLElement {
     this.cambiarCategoria('todo');
   }
 
-  // ---------- Lista de productos ----------
   productosFiltrados() {
-    const { busqueda, categoria, precioMax, tallas, orden } = this.estado;
-
-    const lista = PRODUCTOS.filter((p) =>
+    const { busqueda, categoria, precioMax, tallas, orden, listaProductos } = this.estado;
+    const lista = listaProductos.filter((p) =>
       (categoria === 'todo' || p.categoria === categoria) &&
       p.precio <= precioMax &&
       (!busqueda || p.nombre.toLowerCase().includes(busqueda)) &&
@@ -206,13 +335,13 @@ class UcjcDescubrimiento extends HTMLElement {
     if (orden === 'precio-asc') lista.sort((a, b) => a.precio - b.precio);
     if (orden === 'precio-desc') lista.sort((a, b) => b.precio - a.precio);
     if (orden === 'nombre') lista.sort((a, b) => a.nombre.localeCompare(b.nombre));
+
     return lista;
   }
 
   pintarProductos() {
     const lista = this.productosFiltrados();
     const raiz = this.shadowRoot;
-
     raiz.querySelector('.contador').textContent =
       `${lista.length} producto${lista.length === 1 ? '' : 's'}`;
 
@@ -227,13 +356,22 @@ class UcjcDescubrimiento extends HTMLElement {
                 <button class="btn-ver" data-accion="ver" data-id="${p.id}">Ver</button>
                 <button class="btn-anadir" data-accion="anadir" data-id="${p.id}">Añadir</button>
               </div>
+              ${
+                this.estado.esAdmin
+                  ? `
+                    <div class="acciones-tarjeta-admin">
+                      <button class="btn-editar" data-accion="editar" data-id="${p.id}">Editar</button>
+                      <button class="btn-eliminar" data-accion="eliminar" data-id="${p.id}">Eliminar</button>
+                    </div>
+                  `
+                  : ''
+              }
             </div>
           </article>
         `).join('')
       : `<p class="vacio">No hay productos con estos filtros.</p>`;
   }
 
-  // ---------- Evento del contrato hacia Compra ----------
   anadirAlCarrito(producto) {
     window.dispatchEvent(new CustomEvent('ucjc:cart:add-item', {
       detail: {
@@ -247,11 +385,10 @@ class UcjcDescubrimiento extends HTMLElement {
         imageUrl: '',
       },
     }));
-    console.log('Emitido ucjc:cart:add-item →', producto.nombre);
+    console.log('Emitido ucjc:cart:add-item 🛒', producto.nombre);
   }
 }
 
-// Registrar el Custom Element si no está registrado
 if (!customElements.get('ucjc-descubrimiento')) {
   customElements.define('ucjc-descubrimiento', UcjcDescubrimiento);
 }
