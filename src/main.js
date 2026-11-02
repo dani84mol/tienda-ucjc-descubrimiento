@@ -31,12 +31,12 @@ class UcjcDescubrimiento extends HTMLElement {
     this.pintarProductos();
   }
 
-  // Escuchar cambios de sesión del equipo de Identidad
+  // Escuchar cambios de sesión (canon: ucjc:identidad:sesion-cambiada@1)
   escucharSesion() {
-    window.addEventListener('ucjc:session:changed', (e) => {
+    window.addEventListener('ucjc:identidad:sesion-cambiada@1', (e) => {
       const detalle = e.detail || {};
-      this.estado.usuarioActivo = detalle.user || null;
-      this.estado.esAdmin = detalle.role === 'admin' || detalle.esAdmin === true;
+      this.estado.usuarioActivo = detalle.autenticado ? detalle.usuario || null : null;
+      this.estado.esAdmin = detalle.usuario?.rol === 'admin' || detalle.esAdmin === true;
       
       this.actualizarBarraAdmin();
       this.pintarProductos();
@@ -373,22 +373,21 @@ class UcjcDescubrimiento extends HTMLElement {
   }
 
   anadirAlCarrito(producto) {
-    window.dispatchEvent(new CustomEvent('ucjc:cart:add-item', {
-      detail: {
-        version: 1,
-        productId: producto.id,
-        sku: producto.id,
-        name: producto.nombre,
-        price: producto.precio,
-        currency: 'EUR',
-        quantity: 1,
-        imageUrl: '',
-      },
-    }));
-    console.log('Emitido ucjc:cart:add-item 🛒', producto.nombre);
+    window.dispatchEvent(
+      new CustomEvent('ucjc:descubrimiento:anadir-al-carrito@1', {
+        detail: {
+          productoId: String(producto.id),
+          nombre: producto.nombre,
+          precio: Number(producto.precio),
+          cantidad: 1,
+        },
+      })
+    );
+    console.log('Emitido ucjc:descubrimiento:anadir-al-carrito@1', producto.nombre);
   }
 }
 
 if (!customElements.get('ucjc-descubrimiento')) {
   customElements.define('ucjc-descubrimiento', UcjcDescubrimiento);
 }
+export default { nombre: 'descubrimiento', version: '0.2.0' };
