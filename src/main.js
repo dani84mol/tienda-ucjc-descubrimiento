@@ -392,3 +392,4 @@ class UcjcDescubrimiento extends HTMLElement {
 if (!customElements.get('ucjc-descubrimiento')) {
   customElements.define('ucjc-descubrimiento', UcjcDescubrimiento);
 }
+export default { nombre: 'descubrimiento', version: '0.2.0' };

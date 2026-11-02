@@ -160,3 +160,18 @@ Distribuido bajo la Licencia MIT. Consulta el archivo `LICENSE` para obtener má
 Tu Nombre / Nombre del Equipo - [@tu_twitter](https://twitter.com/tu_usuario) - correo@ejemplo.com
 
 Enlace del proyecto: <https://github.com/tu-usuario/tu-repositorio>
+## Cómo se publica (contrato de carga del shell)
+
+Requisito: **Node ≥ 20** (el workflow usa Node 22).
+
+1. `npm ci && npm run build` → genera `dist/remote.js`.
+2. Etiquetar y empujar: `git tag v0.2.0 && git push origin v0.2.0`.
+3. El workflow `.github/workflows/release.yml` publica `dist/` en la rama `gh-pages` bajo `v0.2.0/`.
+4. En el repo: *Settings → Pages* → Source: rama **`gh-pages`**, carpeta **`/`**.
+5. URL esperada: `https://<usuario-o-org>.github.io/<repo>/v0.2.0/remote.js`.
+
+Esta pieza exporta `{ nombre, version }` y registra su custom element al importar el módulo.
+
+### Nota sobre etiquetas
+
+Ya existe un tag `v1.0.0` en este repo. Para la entrega de carga podéis usar **`v0.2.0`** (semver de la asignatura) u otra etiqueta nueva; un tag Git no se reescribe.
