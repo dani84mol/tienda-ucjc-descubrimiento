@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulador de Shell</title>
+</head>
+<body>
+  <h1>Prueba de Carga del Micro-frontend</h1>
+  
+  <!-- El Custom Element que espera el shell -->
+  <ucjc-descubrimiento></ucjc-descubrimiento>
+
+  <!-- Importar y probar la carga -->
+  <script type="module">
+    import descubrimiento from './dist/remote.js';
+    console.log("Módulo cargado con éxito:", descubrimiento);
+
+    // Escuchar el evento de añadir al carrito para validar la comunicación
+    window.addEventListener('ucjc:descubrimiento:anadir-al-carrito@1', (e) => {
+      console.log('🛒 Evento recibido correctamente:', e.detail);
+    });
+  </script>
+</body>
+</html>
