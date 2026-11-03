@@ -1,64 +1,150 @@
 # Registro de tiempos de desarrollo — TIEMPO.md
 
-Este documento recoge el tiempo dedicado al desarrollo del microfrontend **Descubrimiento** del proyecto `tienda-ucjc-descubrimiento`.
+Este documento recoge la dedicación al microfrontend
+Descubrimiento del proyecto tienda-ucjc-descubrimiento.
 
-## Resumen de tareas iniciales
+Los tiempos iniciales conservan el registro existente.
+Los tiempos posteriores son aproximaciones retrospectivas
+y el reparto de responsables es una propuesta para revisión del equipo.
 
-| Punto | Tarea / Entregable | Tiempo invertido |
+## Tareas iniciales
+
+| Punto | Tarea | Tiempo registrado |
 | :---: | :--- | :---: |
-| 1 | Formación del equipo, asignación de responsable y envío de correo a la coordinación | 1 min |
-| 2 | Creación del repositorio en GitHub e invitación enviada al profesor César | 5 min |
-| 3 | Redacción inicial del README.md: pieza, integrantes, responsable y Custom Element | 5 min |
-| 4 | Inicialización del proyecto Vite y renderizado básico del Custom Element | 15 min |
-| 5 | Redacción del borrador de eventos a emitir y consumir y definición de payloads | 30 min |
-| 6 | Creación y formateo del archivo TIEMPO.md | 5 min |
-| **Total** | **Tiempo total de las tareas iniciales** | **1 h 01 min** |
+| 1 | Formación del equipo, asignación del responsable y comunicación a coordinación | 1 min |
+| 2 | Creación del repositorio e invitación al profesor | 5 min |
+| 3 | Redacción inicial del README con pieza, integrantes, responsable y Custom Element | 5 min |
+| 4 | Inicialización con Vite y renderizado básico del Custom Element | 15 min |
+| 5 | Borrador de eventos y definición inicial de payloads | 30 min |
+| 6 | Creación del archivo TIEMPO.md | 5 min |
+| **Total** | **Tareas iniciales** | **1 h 01 min** |
 
-## Desglose de tareas iniciales
+## Desglose inicial
 
-1. **Formación del equipo (1 min):** Organización del equipo, designación del responsable y envío del correo informativo con el nombre del equipo, integrantes, responsable y URL del repositorio.
+1. Organización del equipo, designación de Daniel Molina Vitón
+   como responsable y comunicación de los datos del proyecto.
 
-2. **Creación del repositorio (5 min):** Creación y configuración del repositorio remoto en GitHub y envío de la invitación de colaboración al profesor César.
+2. Creación del repositorio tienda-ucjc-descubrimiento
+   e invitación de colaboración al profesor.
 
-3. **README inicial (5 min):** Redacción de los datos identificativos: pieza asignada, miembros del equipo, responsable y nombre del Custom Element `<ucjc-descubrimiento>`.
+3. Redacción de los datos identificativos del equipo
+   y del Custom Element `<ucjc-descubrimiento>`.
 
-4. **Inicialización con Vite (15 min):** Configuración del entorno base, arranque del servidor de desarrollo mediante `npm run dev` y comprobación de la renderización básica «Soy Descubrimiento».
+4. Configuración del entorno con Vite, ejecución de
+   `npm run dev` y comprobación del renderizado inicial.
 
-5. **Borrador de eventos (30 min):** Elaboración del borrador inicial de eventos DOM `ucjc:cart:add-item`, `ucjc:session:changed` y `ucjc:cart:updated`, con sus emisores, receptores y payloads. Estos nombres corresponden al borrador inicial; la adaptación al contrato definitivo se registra por separado.
+5. Preparación del borrador de eventos
+   `ucjc:cart:add-item`, `ucjc:session:changed`
+   y `ucjc:cart:updated`.
+   Estos nombres corresponden al borrador inicial,
+   anterior a la adaptación al contrato definitivo.
 
-6. **Registro de tiempos (5 min):** Creación del archivo `TIEMPO.md` y registro de la dedicación a las tareas iniciales.
+6. Creación del registro de tiempos y cálculo
+   de la dedicación inicial.
 
 ## Desarrollo y preparación de la entrega
 
-Los responsables y tiempos pendientes se completarán con la dedicación real de cada integrante. Las tareas sin finalizar se registrarán al terminarlas.
+Los tiempos de esta tabla son aproximaciones retrospectivas,
+no mediciones exactas. Los responsables indican un reparto propuesto
+que deberá validar el equipo.
 
-| Punto | Tarea / Entregable | Responsable | Tiempo invertido |
+| Punto | Tarea | Responsable propuesto | Tiempo aproximado |
 | :---: | :--- | :--- | :---: |
-| 7 | Desarrollo del catálogo con datos fijos, búsqueda, filtros, ordenación y ficha de producto | Por completar | Por completar |
-| 8 | Adaptación al evento ucjc:descubrimiento:anadir-al-carrito@1 | Por completar | Por completar |
-| 9 | Revisión y actualización del README para ajustarlo al proyecto | Jaime Nicolás Mas | Por completar |
-| 10 | Preparación de la página de demostración y comprobación de remote.js | Por completar | Por completar |
-| 11 | Corrección del workflow y comprobación del despliegue en GitHub Pages | Por completar | Por completar |
-| 12 | Pruebas finales y creación del tag de entrega | Por completar | Por completar |
+| 7 | Catálogo con productos fijos y ficha de detalle | Juan Cruz Romero | 1 h |
+| 8 | Búsqueda, filtros y ordenación del catálogo | Jaime Moraleda Lorán | 1 h |
+| 9 | Adaptación del evento de añadir al carrito y comprobación del payload | Mario González Baranda | 30 min |
+| 10 | Actualización del README y del registro de tiempos | Jaime Nicolás Mas | 30 min |
+| 11 | Preparación de la página de demostración, compilación de remote.js y configuración del workflow | Jaime Nicolás Mas | 45 min |
+| **Total** | **Desarrollo y preparación** | **Equipo Descubrimiento** | **3 h 45 min** |
 
-## Descripción de las tareas de entrega
+## Comprobaciones pendientes de cierre
 
-7. **Catálogo con datos fijos:** Implementación del catálogo local en `src/productos.js`, búsqueda por nombre, filtros por categoría, precio y talla, ordenación y consulta de la ficha de producto.
+| Tarea | Responsable propuesto | Tiempo previsto |
+| :--- | :--- | :---: |
+| Comprobar el despliegue y las URL de GitHub Pages | Jaime Nicolás Mas | 15 min |
+| Comprobar la integración dentro del shell y la comunicación con Compra | Daniel Molina Vitón y Mario González Baranda | 30 min |
+| Revisar la entrega y crear el tag v0.2.0 | Daniel Molina Vitón | 15 min |
+| **Total** | **Equipo Descubrimiento** | **1 h** |
 
-8. **Evento del contrato definitivo:** Adaptación de la acción Añadir para emitir `ucjc:descubrimiento:anadir-al-carrito@1`, con los campos `productoId`, `nombre`, `precio` y `cantidad`.
+Las comprobaciones anteriores se marcarán como completadas
+cuando se hayan realizado, sustituyendo la previsión
+por el tiempo empleado.
 
-9. **Actualización del README:** Sustitución del texto de plantilla por la descripción real del componente, tecnologías utilizadas, comandos de ejecución, estructura, evento e instrucciones de integración.
+## Relación con los contratos
 
-10. **Módulo y página de demostración:** Preparación de `public/index.html` para cargar `remote.js` y comprobación de la compilación mediante `npm run build` y `npm run preview`.
+### Responsabilidades de Descubrimiento
 
-11. **Publicación en GitHub Pages:** Corrección del archivo `.github/workflows/deploy.yml`, configuración de Pages y comprobación de las URL de la página y del módulo publicado.
+Según la hoja A, nuestra pieza se encarga de:
 
-12. **Verificación y tag:** Comprobación del catálogo y del evento emitido en la versión publicada y creación del tag que identifica la entrega.
+- Mostrar la lista de productos.
+- Buscar productos por texto.
+- Mostrar los detalles de los productos.
 
-## Tiempo total
+Quedan fuera de nuestra responsabilidad:
 
-- **Tareas iniciales:** 61 minutos (1 h 01 min).
-- **Desarrollo y preparación de la entrega:** pendiente de completar.
-- **Dedicación total acumulada del equipo:** pendiente de calcular.
+- Inicio de sesión: equipo de Identidad.
+- Gestión del carrito: equipo de Compra.
+- Procesamiento del pago: equipo de Datos/Pedidos.
 
-El total final se calculará sumando los tiempos registrados. Si varias personas trabajan simultáneamente, la suma representa la dedicación acumulada del equipo.
+### Comunicación con otros equipos
+
+La hoja B de Carrito recoge el intercambio de identificador
+de producto, precio, nombre y cantidad.
+
+La implementación actual emite el evento:
+
+`ucjc:descubrimiento:anadir-al-carrito@1`
+
+Con los siguientes campos:
+
+| Campo | Tipo |
+| :--- | :--- |
+| productoId | string |
+| nombre | string |
+| precio | number |
+| cantidad | number |
+
+La hoja B de Identidad contempla recibir información
+del identificador y tipo de usuario.
+
+Las hojas B contienen nombres de eventos provisionales.
+Los nombres exactos y los tipos de los campos deben coincidir
+con el contrato definitivo compartido entre los equipos.
+
+## Resumen
+
+| Bloque | Tiempo |
+| :--- | :---: |
+| Tareas iniciales registradas | 1 h 01 min |
+| Desarrollo y preparación: aproximación retrospectiva | 3 h 45 min |
+| Subtotal registrado y aproximado | 4 h 46 min |
+| Comprobaciones pendientes: previsión | 1 h |
+| Total previsto de todas las tareas | 5 h 46 min |
+
+Los totales anteriores suman la duración de las tareas
+consideradas en secuencia; no son horas por persona.
+Si hubo trabajo simultáneo, esta suma no representa
+el tiempo transcurrido del equipo y deberá ajustarse
+para completar el apartado real de la hoja C.
+
+## Estimación de la hoja C
+
+La hoja C pide estimaciones en horas de equipo,
+no horas individuales acumuladas.
+
+Para la semana 1 aparecen estas estimaciones:
+
+| Miembro | Estimación de horas de equipo |
+| :--- | :---: |
+| Daniel Molina Vitón | 3 h |
+| Mario González Baranda | 2 h |
+| Juan Cruz Romero | 2 h |
+| Jaime Moraleda Lorán | 2 h |
+| Jaime Nicolás Mas | 2 h |
+
+La mediana de las estimaciones es 2 horas.
+Las 11 horas anotadas en la hoja corresponden a la suma,
+no a la mediana.
+
+El tiempo real de cada semana y la tarea con mayor desviación
+se completarán en la hoja C tras revisar el trabajo del equipo.
