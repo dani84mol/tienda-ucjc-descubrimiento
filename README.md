@@ -18,145 +18,101 @@ Repositorio del micro-frontend de **Descubrimiento** para el proyecto conjunto *
 
 ---
 
-## 2. V1 de la Tienda
+## 2. Descripción
 
-## 🧐 Acerca del Proyecto
+Microfrontend de Descubrimiento de la Tienda UCJC.
 
-Este proyecto nace con el objetivo de resolver la falta de herramientas eficientes y centralizadas para la gestión y optimización de flujos de trabajo en entornos digitales. 
+Permite consultar un catálogo de ocho productos con datos fijos,
+buscar por nombre, filtrar por categoría, precio y talla,
+ordenar los resultados y consultar la ficha de cada producto.
 
-A menudo, los desarrolladores y usuarios se enfrentan a plataformas complejas, poco intuitivas o lentas. **Nombre del Proyecto** aborda este problema ofreciendo una solución moderna, liviana y altamente personalizable que simplifica la interacción diaria y automatiza tareas repetitivas.
+Al pulsar Añadir, emite un evento para que el microfrontend
+de Compra gestione la incorporación al carrito.
 
-### 💡 ¿Por qué esta solución?
-* **Simplicidad ante todo:** Diseñado enfocándose en la experiencia de usuario (UX) para minimizar la curva de aprendizaje.
-* **Ahorro de tiempo:** Reduce significativamente el tiempo requerido para realizar operaciones clave mediante automatización e integraciones clave.
-* **Mantenibilidad:** Desarrollado bajo las mejores prácticas y estándares de la industria para permitir un crecimiento continuo y sostenible.
+## 3. Tecnologías
 
-## ✨ Características Principales
+- HTML, CSS y JavaScript.
+- Web Components: Custom Elements y Shadow DOM.
+- Vite.
+- GitHub Actions y GitHub Pages para la publicación.
 
-* **Alta Eficiencia y Rendimiento:** Optimizado para cargas rápidas y respuesta con baja latencia.
+## 4. Ejecución local
 
-* **Interfaz Intuitiva y Responsiva:** Diseño adaptable a dispositivos móviles, tablets y ordenadores de escritorio.
+Desde la carpeta del proyecto:
 
-* **Seguridad y Autenticación:** Control de acceso mediante roles, encriptación de datos sensibles y autenticación de usuarios sólida.
-
-* **Gestión de Datos en Tiempo Real:** Actualización y sincronización inmediata de la información.
-
-* **Integración con APIs Externas:** Conexión fluida con servicios de terceros y sistemas backend.
-
-* **Arquitectura Escalable y Modular:** Código estructurado que facilita el mantenimiento, las pruebas y la incorporación de nuevas funciones.
-
-## 🛠️ Tecnologías Utilizadas
-
-Menciona los lenguajes, frameworks, librerías y herramientas principales empleadas:
-
-* **Frontend:** HTML5, CSS3, JavaScript / React / Vue / Angular
-
-* **Backend:** Node.js / Python / Java / PHP
-
-* **Base de Datos:** PostgreSQL / MongoDB / MySQL
-
-* **Otras Herramientas:** Docker, Git, etc.
-
-## ⚙️ Requisitos Previos
-
-Asegúrate de tener instalados los siguientes componentes antes de comenzar:
-
-* [Node.js](https://nodejs.org/) (versión v18 o superior)
-
-* [Git](https://git-scm.com/)
-
-* [npm](https://www.npmjs.com/) o [yarn](https://yarnpkg.com/)
-
-## 🚀 Instalación y Configuración
-
-Sigue estos pasos para ejecutar el proyecto de forma local:
-
-1. **Clonar el repositorio:**
-
-   ```
-   git clone https://github.com/dani84mol/tienda-ucjc-descubrimiento.git
-   
-   ```
-
-2. **Navegar al directorio del proyecto:**
-
-   ```
-   cd tu-repositorio
-   
-   ```
-
-3. **Instalar las dependencias:**
-
-   ```
-   npm install
-   
-   ```
-
-4. **Configurar las variables de entorno:**
-   Crea un archivo `.env` en la raíz del proyecto basándote en el archivo de ejemplo `.env.example`:
-
-   ```
-   cp .env.example .env
-   
-   ```
-
-5. **Iniciar la aplicación en modo desarrollo:**
-
-   ```
-   npm run dev
-   
-   ```
-
-## 💻 Uso
-
-Explica brevemente cómo interactuar con el proyecto o muestra un par de comandos/ejemplos clave:
-
-```
-# Ejemplo de ejecución de pruebas
-npm test
-
+```bash
+npm ci
+npm run dev
 ```
 
-Abre tu navegador y visita `http://localhost:3000` para ver la aplicación en funcionamiento.
+Abrir la dirección que indique Vite en la terminal.
 
-## 📁 Estructura del Proyecto
+## 5. Compilación y comprobación
 
-```
-.
-├── src/
-│   ├── components/     # Componentes reutilizables
-│   ├── controllers/    # Controladores de la aplicación
-│   ├── models/         # Modelos de datos
-│   ├── routes/         # Rutas de la API / navegación
-│   └── index.js        # Punto de entrada principal
-├── public/             # Archivos estáticos
-├── .env.example        # Plantilla de variables de entorno
-├── .gitignore          # Archivos excluidos de Git
-├── package.json        # Dependencias y scripts
-└── README.md           # Documentación del proyecto
-
+```bash
+npm run build
+npm run preview
 ```
 
-## 🤝 Contribución
+La compilación genera la carpeta `dist`.
+El módulo de integración es `dist/remote.js`.
 
-Las contribuciones son las que hacen de la comunidad de código abierto un lugar increíble para aprender, inspirar y crear. Cualquier contribución que hagas será **muy apreciada**.
+La página de demostración de `public/index.html` se copia a `dist`
+durante la compilación y permite comprobar el catálogo publicado.
 
-1. Haz un *Fork* del proyecto.
+## 6. Integración
 
-2. Crea tu rama de función (`git checkout -b feature/NuevaFuncionalidad`).
+Cargar el módulo e incluir el Custom Element:
 
-3. Realiza tus cambios y haz un *Commit* (`git commit -m 'Añadir nueva funcionalidad'`).
+```html
+<ucjc-descubrimiento></ucjc-descubrimiento>
+<script type="module" src="./remote.js"></script>
+```
 
-4. Haz un *Push* a la rama (`git push origin feature/NuevaFuncionalidad`).
+La ruta del script debe apuntar al módulo publicado.
 
-5. Abre una *Pull Request*.
+## 7. Evento emitido
 
-## 📄 Licencia
+Nombre completo:
 
-Distribuido bajo la Licencia MIT. Consulta el archivo `LICENSE` para obtener más información.
+`ucjc:descubrimiento:anadir-al-carrito@1`
 
-## ✉️ Contacto
+Se emite en `window` cuando se pulsa Añadir.
 
-Tu Nombre / Nombre del Equipo - [@tu_twitter](https://twitter.com/tu_usuario) - correo@ejemplo.com
+Ejemplo de `detail`:
 
-Enlace del proyecto: <https://github.com/tu-usuario/tu-repositorio>
+```json
+{
+  "productoId": "prod-101",
+  "nombre": "Camiseta Técnica UCJC",
+  "precio": 19.99,
+  "cantidad": 1
+}
+```
+
+Los campos del evento son `productoId`, `nombre`, `precio`
+y `cantidad`.
+
+El componente emite la solicitud; la gestión del carrito
+corresponde al microfrontend de Compra.
+
+## 8. Estructura
+
+- `src/main.js`: componente, interfaz y eventos.
+- `src/productos.js`: productos, categorías y tallas.
+- `src/estilos.js`: estilos del componente.
+- `index.html`: página de desarrollo.
+- `public/index.html`: página de demostración para publicar.
+- `vite.config.js`: configuración de compilación de `remote.js`.
+- `.github/workflows/deploy.yml`: despliegue en GitHub Pages.
+- `TIEMPO.md`: registro de dedicación del equipo.
+
+## 9. Publicación
+
+Direcciones previstas, pendientes de verificar tras el despliegue:
+
+- Web: https://dani84mol.github.io/tienda-ucjc-descubrimiento/
+- Módulo: https://dani84mol.github.io/tienda-ucjc-descubrimiento/remote.js
+
+El tag de la entrega se indicará cuando se haya creado
+y comprobado la versión publicada.
