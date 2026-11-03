@@ -1,5 +1,7 @@
 import { CATEGORIAS, TALLAS, PRODUCTOS } from './productos.js';
 import { ESTILOS } from './estilos.js';
+// Nombre del evento según el contrato (PR #2 de tienda-ucjc-contratos)
+export const EVENTO_ANADIR_AL_CARRITO = 'ucjc:descubrimiento:anadir-al-carrito@1';
 
 const PRECIO_MAXIMO = 60;
 
@@ -372,20 +374,18 @@ class UcjcDescubrimiento extends HTMLElement {
       : `<p class="vacio">No hay productos con estos filtros.</p>`;
   }
 
+  // Contrato ucjc:descubrimiento:anadir-al-carrito@1 (emisor: Descubrimiento, consumidor: Compra).
+  // Solo los 4 campos firmados: no añadir ni renombrar campos sin pasar por el repo de contratos.
   anadirAlCarrito(producto) {
-    window.dispatchEvent(new CustomEvent('ucjc:cart:add-item', {
+    window.dispatchEvent(new CustomEvent(EVENTO_ANADIR_AL_CARRITO, {
       detail: {
-        version: 1,
-        productId: producto.id,
-        sku: producto.id,
-        name: producto.nombre,
-        price: producto.precio,
-        currency: 'EUR',
-        quantity: 1,
-        imageUrl: '',
+        productoId: producto.id,
+        nombre: producto.nombre,
+        precio: producto.precio,
+        cantidad: 1,
       },
     }));
-    console.log('Emitido ucjc:cart:add-item 🛒', producto.nombre);
+    console.log(`Emitido ${EVENTO_ANADIR_AL_CARRITO} 🛒`, producto.nombre);
   }
 }
 
