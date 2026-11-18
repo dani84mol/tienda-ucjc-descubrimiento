@@ -443,6 +443,6 @@ if (!customElements.get('ucjc-descubrimiento')) {
 
 // Exportación requerida por el shell del curso
 export default {
-  nombre: 'ucjc-descubrimiento',
+  nombre: 'descubrimiento',
   version: '0.2.0'
 };
