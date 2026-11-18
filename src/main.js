@@ -2,6 +2,8 @@ import { CATEGORIAS, TALLAS, PRODUCTOS } from './productos.js';
 import { ESTILOS } from './estilos.js';
 // Nombre del evento según el contrato (PR #2 de tienda-ucjc-contratos)
 export const EVENTO_ANADIR_AL_CARRITO = 'ucjc:descubrimiento:anadir-al-carrito@1';
+// Evento que escuchamos (emisor: Identidad). Contrato firmado ucjc-identidad-sesion-cambiada@1
+export const EVENTO_SESION_CAMBIADA = 'ucjc:identidad:sesion-cambiada@1';
 
 const PRECIO_MAXIMO = 60;
 
@@ -33,13 +35,15 @@ class UcjcDescubrimiento extends HTMLElement {
     this.pintarProductos();
   }
 
-  // Escuchar cambios de sesión del equipo de Identidad
+  // Escuchar cambios de sesión del equipo de Identidad.
+  // detail = { autenticado: true, usuario: { id, email, nombre? } }  o  { autenticado: false, usuario: null }
   escucharSesion() {
-    window.addEventListener('ucjc:session:changed', (e) => {
-      const detalle = e.detail || {};
-      this.estado.usuarioActivo = detalle.user || null;
-      this.estado.esAdmin = detalle.role === 'admin' || detalle.esAdmin === true;
-      
+    window.addEventListener(EVENTO_SESION_CAMBIADA, (e) => {
+      const { autenticado = false, usuario = null } = e.detail || {};
+      this.estado.usuarioActivo = autenticado && usuario ? usuario : null;
+      // En @1 los roles NO viajan por el bus (lo dice el contrato), así que no sabemos si es admin.
+      this.estado.esAdmin = false;
+
       this.actualizarBarraAdmin();
       this.pintarProductos();
     });
@@ -114,14 +118,23 @@ class UcjcDescubrimiento extends HTMLElement {
 
   actualizarBarraAdmin() {
     const contenedorAdmin = this.shadowRoot.querySelector('#admin-bar-container');
+    const usuario = this.estado.usuarioActivo;
+
     if (!this.estado.esAdmin) {
-      contenedorAdmin.innerHTML = '';
+      // Barra de sesión: así se ve que reaccionamos al iniciar y cerrar sesión
+      contenedorAdmin.innerHTML = `
+        <div class="barra-admin" role="status">
+          <span>${usuario
+            ? `👤 Sesión iniciada: ${usuario.nombre || usuario.email}`
+            : 'Navegando como invitado'}</span>
+        </div>
+      `;
       return;
     }
 
     contenedorAdmin.innerHTML = `
       <div class="barra-admin">
-        <span>⚙️ Panel de Administración activo (${this.estado.usuarioActivo?.name || 'Admin'})</span>
+        <span>⚙️ Panel de Administración activo (${usuario?.nombre || usuario?.email || 'Admin'})</span>
         <button type="button" class="btn-admin" data-accion="nuevo-producto">+ Añadir Producto</button>
       </div>
     `;
