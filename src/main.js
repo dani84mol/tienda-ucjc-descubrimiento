@@ -7,6 +7,28 @@ export const EVENTO_SESION_CAMBIADA = 'ucjc:identidad:sesion-cambiada@1';
 
 const PRECIO_MAXIMO = 60;
 
+// Estilos del aviso de "producto añadido / eliminado"
+const ESTILOS_AVISO = `
+  .aviso {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translate(-50%, 1rem);
+    padding: .75rem 1.25rem;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .2);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s, transform .25s;
+    z-index: 2000;
+  }
+  .aviso.visible { opacity: 1; transform: translate(-50%, 0); }
+  .aviso.anadido { background: #15803d; }
+  .aviso.eliminado { background: #b91c1c; }
+`;
+
 class UcjcDescubrimiento extends HTMLElement {
   constructor() {
     super();
@@ -51,7 +73,7 @@ class UcjcDescubrimiento extends HTMLElement {
 
   pintarEstructura() {
     this.shadowRoot.innerHTML = `
-      <style>${ESTILOS}</style>
+      <style>${ESTILOS}${ESTILOS_AVISO}</style>
 
       <header class="barra-superior">
         <div class="lateral lateral-izq">
@@ -110,6 +132,8 @@ class UcjcDescubrimiento extends HTMLElement {
       </div>
 
       <div id="modal-container"></div>
+
+      <div class="aviso" role="status" aria-live="polite"></div>
     `;
 
     this.actualizarBarraAdmin();
@@ -261,6 +285,7 @@ class UcjcDescubrimiento extends HTMLElement {
         if (confirm(`¿Estás seguro de eliminar "${producto.nombre}"?`)) {
           this.estado.listaProductos = this.estado.listaProductos.filter((p) => p.id !== id);
           this.pintarProductos();
+          this.mostrarAviso(`🗑️ Producto eliminado: ${producto.nombre}`, 'eliminado');
         }
       }
     });
@@ -399,6 +424,16 @@ class UcjcDescubrimiento extends HTMLElement {
       },
     }));
     console.log(`Emitido ${EVENTO_ANADIR_AL_CARRITO} 🛒`, producto.nombre);
+    this.mostrarAviso(`✅ Producto añadido: ${producto.nombre}`, 'anadido');
+  }
+
+  // Muestra un aviso abajo de la pantalla durante 2,5 segundos
+  mostrarAviso(texto, tipo) {
+    const aviso = this.shadowRoot.querySelector('.aviso');
+    aviso.textContent = texto;
+    aviso.className = `aviso ${tipo} visible`;
+    clearTimeout(this.temporizadorAviso);
+    this.temporizadorAviso = setTimeout(() => aviso.classList.remove('visible'), 2500);
   }
 }
 
@@ -408,6 +443,6 @@ if (!customElements.get('ucjc-descubrimiento')) {
 
 // Exportación requerida por el shell del curso
 export default {
-  nombre: 'descubrimiento',
+  nombre: 'ucjc-descubrimiento',
   version: '0.2.0'
 };
