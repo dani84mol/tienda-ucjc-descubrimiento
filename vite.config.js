@@ -1,24 +1,14 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: './',
+  // Usa la variable VITE_BASE_PATH si existe, o la ruta del repo por defecto
+  base: process.env.VITE_BASE_PATH || '/tienda-ucjc-descubrimiento/',
   build: {
-    lib: {
-      entry: './src/main.js',
-      name: 'UcjcDescubrimiento',
-      fileName: 'remote',
-      formats: ['es']
-    },
     rollupOptions: {
-      // Si usas dependencias externas que provee el shell, ponlas aquí.
-      // Si todo va autocontenido en el custom element, puedes dejarlo vacío.
-      external: [],
       output: {
-        assetFileNames: (assetInfo) => {
-          if (assetInfo.name === 'style.css') return 'remote.css';
-          return assetInfo.name;
-        }
-      }
-    }
-  }
+        // Asegura que el punto de entrada se llame exactamente remote.js
+        entryFileNames: 'remote.js',
+      },
+    },
+  },
 });
