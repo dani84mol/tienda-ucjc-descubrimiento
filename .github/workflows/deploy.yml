@@ -7,21 +7,15 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -36,23 +30,18 @@ jobs:
         run: npm ci
 
       - name: Build
+        env:
+          # Si es un tag (v0.2.1), pasa /tienda-ucjc-descubrimiento/v0.2.1/
+          # Si es main, pasa /tienda-ucjc-descubrimiento/
+          VITE_BASE_PATH: ${{ startsWith(github.ref, 'refs/tags/') && format('/tienda-ucjc-descubrimiento/{0}/', github.ref_name) || '/tienda-ucjc-descubrimiento/' }}
         run: npm run build
 
-      - name: Create version folder
-        if: startsWith(github.ref, 'refs/tags/')
-        run: |
-          VERSION="${GITHUB_REF_NAME}"
-          mkdir -p "dist/${VERSION}"
-          find dist -mindepth 1 -maxdepth 1 ! -name "${VERSION}" -exec mv {} "dist/${VERSION}/" \;
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload site
-        uses: actions/upload-pages-artifact@v3
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: dist
-
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          # Si es tag publica en la subcarpeta /v0.2.1; si es main publica en la raíz
+          destination_dir: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || '' }}
+          # No borra versiones anteriores ni la raíz
+          keep_files: true
