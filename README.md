@@ -62,14 +62,19 @@ durante la compilación y permite comprobar el catálogo publicado.
 
 ## 6. Integración
 
-Cargar el módulo e incluir el Custom Element:
+Cargar el módulo e incluir el Custom Element apuntando a la última versión o a una versión fijada:
 
 ```html
 <ucjc-descubrimiento></ucjc-descubrimiento>
-<script type="module" src="./remote.js"></script>
+<script type="module" src="https://dani84mol.github.io/tienda-ucjc-descubrimiento/remote.js"></script>
 ```
 
-La ruta del script debe apuntar al módulo publicado.
+Para fijar una versión concreta en el proyecto contenedor (recomendado para evitar cambios inesperados):
+
+```html
+<ucjc-descubrimiento></ucjc-descubrimiento>
+<script type="module" src="https://dani84mol.github.io/tienda-ucjc-descubrimiento/v0.2.1/remote.js"></script>
+```
 
 ## 7. Evento emitido
 
@@ -104,15 +109,17 @@ corresponde al microfrontend de Compra.
 - `index.html`: página de desarrollo.
 - `public/index.html`: página de demostración para publicar.
 - `vite.config.js`: configuración de compilación de `remote.js`.
-- `.github/workflows/deploy.yml`: despliegue en GitHub Pages.
+- `.github/workflows/deploy.yml`: despliegue y versionado automático en GitHub Pages.
 - `TIEMPO.md`: registro de dedicación del equipo.
 
-## 9. Publicación
+## 9. Publicación y Versionado
 
-Direcciones previstas, pendientes de verificar tras el despliegue:
+El despliegue se realiza automáticamente mediante GitHub Actions sobre la rama `gh-pages`, manteniendo el historial de versiones publicadas (`keep_files: true`):
 
-- Web: https://dani84mol.github.io/tienda-ucjc-descubrimiento/
-- Módulo: https://dani84mol.github.io/tienda-ucjc-descubrimiento/remote.js
+- **Web (demo):** https://dani84mol.github.io/tienda-ucjc-descubrimiento/
+- **Módulo versionado (por tag):** `https://dani84mol.github.io/tienda-ucjc-descubrimiento/v<VERSION>/remote.js`
 
-El tag de la entrega se indicará cuando se haya creado
-y comprobado la versión publicada.
+### Flujo de versiones
+
+1. **Incremento automático (Patch):** Cada `push` a `main` detecta la última etiqueta publicada, incrementa automáticamente el número de versión (`v0.2.1` → `v0.2.2` → `v0.2.3`...), crea el tag en el repositorio y despliega tanto la subcarpeta de la nueva versión como la raíz (`latest`) sin sobrescribir entregas anteriores.
+2. **Salto de versión manual (Minor / Major):** Para iniciar una nueva serie (por ejemplo `v0.3.0`), basta con crear y subir el tag desde local (`git tag v0.3.0 && git push origin v0.3.0`), y los siguientes commits continuarán incrementando a partir de esa numeración.
