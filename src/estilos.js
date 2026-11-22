@@ -56,6 +56,10 @@ export const ESTILOS = `
     cursor: pointer;
   }
 
+  .selector-moneda { display:flex; justify-content:flex-end; align-items:center; gap:.5rem; padding:.7rem 1rem; background:#eff6ff; }
+  .selector-moneda button { padding:.5rem .85rem; border:1px solid var(--azul); border-radius:6px; background:white; color:var(--azul); cursor:pointer; font-weight:600; }
+  .selector-moneda button[aria-pressed="true"] { background:var(--azul); color:white; }
+
   /* ---------- Navegación por categorías ---------- */
   .navegacion {
     display: flex;

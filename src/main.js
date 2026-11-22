@@ -5,7 +5,7 @@ export const EVENTO_ANADIR_AL_CARRITO = 'ucjc:descubrimiento:anadir-al-carrito@1
 // Evento que escuchamos (emisor: Identidad). Contrato firmado ucjc-identidad-sesion-cambiada@1
 export const EVENTO_SESION_CAMBIADA = 'ucjc:identidad:sesion-cambiada@1';
 
-const PRECIO_MAXIMO = 60;
+const PRECIO_MAXIMO = { EUR: 60, USD: 70 };
 
 // Estilos del aviso de "producto añadido / eliminado"
 const ESTILOS_AVISO = `
@@ -40,14 +40,23 @@ class UcjcDescubrimiento extends HTMLElement {
     return {
       busqueda: '',
       categoria: 'todo',
-      precioMax: PRECIO_MAXIMO,
+      precioMax: PRECIO_MAXIMO.EUR,
+      moneda: 'EUR',
       tallas: [],
       orden: 'relevancia',
       productoSeleccionado: null,
       usuarioActivo: null,
       esAdmin: false,
-      listaProductos: [...PRODUCTOS],
+      listaProductos: PRODUCTOS.map(p => ({ ...p, tallas: [...p.tallas] })),
     };
+  }
+
+  precioProducto(producto) {
+    return this.estado.moneda === 'USD' ? producto.precioUSD : producto.precioEUR;
+  }
+
+  formatearPrecio(precio) {
+    return new Intl.NumberFormat('es-ES', { style: 'currency', currency: this.estado.moneda }).format(precio);
   }
 
   connectedCallback() {
@@ -88,6 +97,11 @@ class UcjcDescubrimiento extends HTMLElement {
         </div>
       </header>
 
+      <div class="selector-moneda" role="group" aria-label="Seleccionar moneda">
+        <span>Moneda:</span>
+        <button type="button" data-moneda="EUR" aria-pressed="true">€ EUR</button>
+        <button type="button" data-moneda="USD" aria-pressed="false">$ USD</button>
+      </div>
       <div id="admin-bar-container"></div>
 
       <nav class="navegacion" aria-label="Categorías">
@@ -105,8 +119,8 @@ class UcjcDescubrimiento extends HTMLElement {
             <label><input type="radio" name="categoria" value="todo" checked /> Todas</label>
           </section>
           <section>
-            <h3>Precio máximo: <span class="valor-precio">${PRECIO_MAXIMO} €</span></h3>
-            <input type="range" name="precio" min="0" max="${PRECIO_MAXIMO}" step="5" value="${PRECIO_MAXIMO}" aria-label="Precio máximo" />
+            <h3>Precio máximo: <span class="valor-precio">${this.formatearPrecio(this.estado.precioMax)}</span></h3>
+            <input type="range" name="precio" min="0" max="${PRECIO_MAXIMO.EUR}" step="5" value="${PRECIO_MAXIMO.EUR}" aria-label="Precio máximo" />
           </section>
           <section>
             <h3>Talla</h3>
@@ -185,7 +199,8 @@ class UcjcDescubrimiento extends HTMLElement {
               ? `
                 <form id="form-producto" style="display: flex; flex-direction: column; gap: 0.75rem;">
                   <label>Nombre: <input type="text" name="nombre" value="${esNuevo ? '' : prod.nombre}" required style="width:100%; padding:0.4rem;" /></label>
-                  <label>Precio (€): <input type="number" step="0.01" name="precio" value="${esNuevo ? '' : prod.precio}" required style="width:100%; padding:0.4rem;" /></label>
+                  <label>Precio (€): <input type="number" step="0.01" name="precioEUR" value="${esNuevo ? '' : prod.precioEUR}" required style="width:100%; padding:0.4rem;" /></label>
+                  <label>Precio ($): <input type="number" min="0" step="0.01" name="precioUSD" value="${esNuevo ? '' : prod.precioUSD}" required style="width:100%; padding:0.4rem;" /></label>
                   <label>Categoría: 
                     <select name="categoria" style="width:100%; padding:0.4rem;">
                       ${CATEGORIAS.map((c) => `<option value="${c.id}" ${prod.categoria === c.id ? 'selected' : ''}>${c.nombre}</option>`).join('')}
@@ -198,7 +213,7 @@ class UcjcDescubrimiento extends HTMLElement {
                 </form>
               `
               : `
-                <p class="precio">${prod.precio.toFixed(2).replace('.', ',')} €</p>
+                <p class="precio">${this.formatearPrecio(this.precioProducto(prod))}</p>
                 <p><strong>Categoría:</strong> ${prod.categoria}</p>
                 <p><strong>Tallas disponibles:</strong> ${prod.tallas.length > 0 ? prod.tallas.join(', ') : 'Única'}</p>
                 <p>Vista detallada del producto dentro del micro-frontend de Descubrimiento.</p>
@@ -218,7 +233,23 @@ class UcjcDescubrimiento extends HTMLElement {
   conectarEventos() {
     const raiz = this.shadowRoot;
 
-    raiz.querySelector('.barra-busqueda').addEventListener('submit', (e) => {
+    raiz.querySelector('.selector-moneda').addEventListener('click', (e) => {
+      const boton = e.target.closest('button[data-moneda]');
+      if (!boton) return;
+      this.estado.moneda = boton.dataset.moneda;
+      this.estado.precioMax = PRECIO_MAXIMO[this.estado.moneda];
+      raiz.querySelectorAll('.selector-moneda button').forEach((b) =>
+        b.setAttribute('aria-pressed', String(b.dataset.moneda === this.estado.moneda))
+      );
+      const rango = raiz.querySelector('input[name="precio"]');
+      rango.max = this.estado.precioMax;
+      rango.value = this.estado.precioMax;
+      raiz.querySelector('.valor-precio').textContent = this.formatearPrecio(this.estado.precioMax);
+      this.pintarProductos();
+      this.actualizarModal();
+    });
+
+    raiz.querySelector('.barra-busqueda').addEventListener('submit' , (e) => {
       e.preventDefault();
       this.estado.busqueda = e.target.q.value.trim().toLowerCase();
       this.pintarProductos();
@@ -235,7 +266,7 @@ class UcjcDescubrimiento extends HTMLElement {
 
     raiz.querySelector('input[name="precio"]').addEventListener('input', (e) => {
       this.estado.precioMax = Number(e.target.value);
-      raiz.querySelector('.valor-precio').textContent = `${e.target.value} €`;
+      raiz.querySelector('.valor-precio').textContent = this.formatearPrecio(this.estado.precioMax);
       this.pintarProductos();
     });
 
@@ -261,7 +292,7 @@ class UcjcDescubrimiento extends HTMLElement {
     raiz.addEventListener('click', (e) => {
       const btnAdmin = e.target.closest('[data-accion="nuevo-producto"]');
       if (btnAdmin) {
-        this.estado.productoSeleccionado = { id: 'nuevo', nombre: '', precio: 0, categoria: 'ropa', tallas: [] };
+        this.estado.productoSeleccionado = { id: 'nuevo', nombre: '', precioEUR: 0, precioUSD: 0, categoria: 'ropa', tallas: [] };
         this.actualizarModal();
       }
     });
@@ -313,14 +344,17 @@ class UcjcDescubrimiento extends HTMLElement {
       if (e.target.id === 'form-producto') {
         const formData = new FormData(e.target);
         const nombre = formData.get('nombre');
-        const precio = parseFloat(formData.get('precio'));
+        const precioEUR = parseFloat(formData.get('precioEUR'));
+        const precioUSD = parseFloat(formData.get('precioUSD'));
+        if (![precioEUR, precioUSD].every(p => Number.isFinite(p) && p >= 0)) return;
         const categoria = formData.get('categoria');
 
         if (this.estado.productoSeleccionado.id === 'nuevo') {
           const nuevoProd = {
             id: `prod-${Date.now()}`,
             nombre,
-            precio,
+            precioEUR,
+            precioUSD,
             categoria,
             tallas: ['M', 'L'],
           };
@@ -330,7 +364,8 @@ class UcjcDescubrimiento extends HTMLElement {
           const prod = this.estado.listaProductos.find((p) => p.id === idActual);
           if (prod) {
             prod.nombre = nombre;
-            prod.precio = precio;
+            prod.precioEUR = precioEUR;
+            prod.precioUSD = precioUSD;
             prod.categoria = categoria;
           }
         }
@@ -353,11 +388,13 @@ class UcjcDescubrimiento extends HTMLElement {
   }
 
   limpiarFiltros() {
-    this.estado = this.estadoInicial();
+    const { moneda, listaProductos, usuarioActivo } = this.estado;
+    this.estado = { ...this.estadoInicial(), moneda, listaProductos, usuarioActivo, precioMax: PRECIO_MAXIMO[moneda] };
     const raiz = this.shadowRoot;
     raiz.querySelector('input[name="q"]').value = '';
-    raiz.querySelector('input[name="precio"]').value = PRECIO_MAXIMO;
-    raiz.querySelector('.valor-precio').textContent = `${PRECIO_MAXIMO} €`;
+    raiz.querySelector('input[name="precio"]').max = this.estado.precioMax;
+    raiz.querySelector('input[name="precio"]').value = this.estado.precioMax;
+    raiz.querySelector('.valor-precio').textContent = this.formatearPrecio(this.estado.precioMax);
     raiz.querySelector('select[name="orden"]').value = 'relevancia';
     raiz.querySelectorAll('.tallas button').forEach((b) => b.setAttribute('aria-pressed', 'false'));
     this.cambiarCategoria('todo');
@@ -367,13 +404,13 @@ class UcjcDescubrimiento extends HTMLElement {
     const { busqueda, categoria, precioMax, tallas, orden, listaProductos } = this.estado;
     const lista = listaProductos.filter((p) =>
       (categoria === 'todo' || p.categoria === categoria) &&
-      p.precio <= precioMax &&
+      this.precioProducto(p) <= precioMax &&
       (!busqueda || p.nombre.toLowerCase().includes(busqueda)) &&
       (tallas.length === 0 || tallas.some((t) => p.tallas.includes(t)))
     );
 
-    if (orden === 'precio-asc') lista.sort((a, b) => a.precio - b.precio);
-    if (orden === 'precio-desc') lista.sort((a, b) => b.precio - a.precio);
+    if (orden === 'precio-asc') lista.sort((a, b) => this.precioProducto(a) - this.precioProducto(b));
+    if (orden === 'precio-desc') lista.sort((a, b) => this.precioProducto(b) - this.precioProducto(a));
     if (orden === 'nombre') lista.sort((a, b) => a.nombre.localeCompare(b.nombre));
 
     return lista;
@@ -391,7 +428,7 @@ class UcjcDescubrimiento extends HTMLElement {
             <div class="imagen">Imagen</div>
             <div class="info">
               <h4>${p.nombre}</h4>
-              <span class="precio">${p.precio.toFixed(2).replace('.', ',')} €</span>
+              <span class="precio">${this.formatearPrecio(this.precioProducto(p))}</span>
               <div class="acciones">
                 <button class="btn-ver" data-accion="ver" data-id="${p.id}">Ver</button>
                 <button class="btn-anadir" data-accion="anadir" data-id="${p.id}">Añadir</button>
@@ -419,12 +456,12 @@ class UcjcDescubrimiento extends HTMLElement {
       detail: {
         productoId: producto.id,
         nombre: producto.nombre,
-        precio: producto.precio,
+        precio: this.precioProducto(producto),
         cantidad: 1,
       },
     }));
     console.log(`Emitido ${EVENTO_ANADIR_AL_CARRITO} 🛒`, producto.nombre);
-    this.mostrarAviso(`✅ Producto añadido: ${producto.nombre}`, 'anadido');
+    this.mostrarAviso(`✅ Producto añadido: ${producto.nombre} — ${this.formatearPrecio(this.precioProducto(producto))}`, 'anadido');
   }
 
   // Muestra un aviso abajo de la pantalla durante 2,5 segundos
