@@ -42,6 +42,7 @@ class UcjcDescubrimiento extends HTMLElement {
       categoria: 'todo',
       precioMax: PRECIO_MAXIMO.EUR,
       moneda: 'EUR',
+      modoBlackFriday: false,
       tallas: [],
       orden: 'relevancia',
       productoSeleccionado: null,
@@ -51,8 +52,25 @@ class UcjcDescubrimiento extends HTMLElement {
     };
   }
 
-  precioProducto(producto) {
+  precioBaseProducto(producto) {
     return this.estado.moneda === 'USD' ? producto.precioUSD : producto.precioEUR;
+  }
+
+  precioProducto(producto) {
+    const base = this.precioBaseProducto(producto);
+    if (!this.estado.modoBlackFriday) return base;
+    const descuento = Number(producto.descuentoBF) || 0;
+    return Math.round(base * (100 - descuento)) / 100;
+  }
+
+  detallePrecio(producto) {
+    const actual = this.formatearPrecio(this.precioProducto(producto));
+    if (!this.estado.modoBlackFriday || !producto.descuentoBF) {
+      return `<span class="precio">${actual}</span>`;
+    }
+    return `<span class="precio-anterior">${this.formatearPrecio(this.precioBaseProducto(producto))}</span>
+      <span class="precio precio-rebajado">${actual}</span>
+      <span class="descuento-bf">-${producto.descuentoBF}%</span>`;
   }
 
   formatearPrecio(precio) {
@@ -102,6 +120,13 @@ class UcjcDescubrimiento extends HTMLElement {
         <button type="button" data-moneda="EUR" aria-pressed="true">€ EUR</button>
         <button type="button" data-moneda="USD" aria-pressed="false">$ USD</button>
       </div>
+      <section class="franja-black-friday" aria-label="Promoción Black Friday">
+        <div class="bf-titulo">
+          <strong>BLACK FRIDAY</strong>
+          <span>Descuentos especiales de la tienda UCJC</span>
+        </div>
+        <button type="button" class="boton-black-friday" aria-pressed="false">Activar Black Friday</button>
+      </section>
       <div id="admin-bar-container"></div>
 
       <nav class="navegacion" aria-label="Categorías">
@@ -213,7 +238,7 @@ class UcjcDescubrimiento extends HTMLElement {
                 </form>
               `
               : `
-                <p class="precio">${this.formatearPrecio(this.precioProducto(prod))}</p>
+                <div class="precios-modal">${this.detallePrecio(prod)}</div>
                 <p><strong>Categoría:</strong> ${prod.categoria}</p>
                 <p><strong>Tallas disponibles:</strong> ${prod.tallas.length > 0 ? prod.tallas.join(', ') : 'Única'}</p>
                 <p>Vista detallada del producto dentro del micro-frontend de Descubrimiento.</p>
@@ -232,6 +257,17 @@ class UcjcDescubrimiento extends HTMLElement {
 
   conectarEventos() {
     const raiz = this.shadowRoot;
+
+    raiz.querySelector('.boton-black-friday').addEventListener('click', () => {
+      this.estado.modoBlackFriday = !this.estado.modoBlackFriday;
+      const activo = this.estado.modoBlackFriday;
+      this.toggleAttribute('data-black-friday', activo);
+      const boton = raiz.querySelector('.boton-black-friday');
+      boton.textContent = activo ? 'Desactivar Black Friday' : 'Activar Black Friday';
+      boton.setAttribute('aria-pressed', String(activo));
+      this.pintarProductos();
+      this.actualizarModal();
+    });
 
     raiz.querySelector('.selector-moneda').addEventListener('click', (e) => {
       const boton = e.target.closest('button[data-moneda]');
@@ -388,8 +424,8 @@ class UcjcDescubrimiento extends HTMLElement {
   }
 
   limpiarFiltros() {
-    const { moneda, listaProductos, usuarioActivo } = this.estado;
-    this.estado = { ...this.estadoInicial(), moneda, listaProductos, usuarioActivo, precioMax: PRECIO_MAXIMO[moneda] };
+    const { moneda, listaProductos, usuarioActivo, modoBlackFriday } = this.estado;
+    this.estado = { ...this.estadoInicial(), moneda, listaProductos, usuarioActivo, modoBlackFriday, precioMax: PRECIO_MAXIMO[moneda] };
     const raiz = this.shadowRoot;
     raiz.querySelector('input[name="q"]').value = '';
     raiz.querySelector('input[name="precio"]').max = this.estado.precioMax;
@@ -428,7 +464,7 @@ class UcjcDescubrimiento extends HTMLElement {
             <div class="imagen">Imagen</div>
             <div class="info">
               <h4>${p.nombre}</h4>
-              <span class="precio">${this.formatearPrecio(this.precioProducto(p))}</span>
+              <div class="precios-tarjeta">${this.detallePrecio(p)}</div>
               <div class="acciones">
                 <button class="btn-ver" data-accion="ver" data-id="${p.id}">Ver</button>
                 <button class="btn-anadir" data-accion="anadir" data-id="${p.id}">Añadir</button>

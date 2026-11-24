@@ -279,4 +279,37 @@ export const ESTILOS = `
     font-size: 0.8rem;
     flex: 1;
   }
+
+  /* Tema Black Friday: estilos limitados al Shadow DOM */
+  .franja-black-friday { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.8rem; padding:1rem 1.2rem; color:white; background:#171717; border-bottom:3px solid #eab308; }
+  .bf-titulo { display:flex; flex-direction:column; gap:.2rem; }
+  .bf-titulo strong { font-size:1.15rem; letter-spacing:.13em; }
+  .bf-titulo span { color:#d4d4d4; font-size:.85rem; }
+  .boton-black-friday { background:#eab308; color:#151515; padding:.65rem 1rem; border:1px solid #eab308; border-radius:8px; font-weight:800; cursor:pointer; }
+  .precios-tarjeta,.precios-modal { display:flex; align-items:center; flex-wrap:wrap; gap:.4rem .6rem; }
+  .precio-anterior { text-decoration:line-through; color:#737373; font-size:.9rem; }
+  .precio-rebajado { color:#b91c1c !important; font-weight:800; }
+  .descuento-bf { color:white; background:#b91c1c; padding:.2rem .45rem; border-radius:4px; font-size:.75rem; font-weight:800; }
+  :host([data-black-friday]) { --azul:#111; --azul-claro:#b91c1c; --gris:#242424; --borde:#444; --texto:#eee; background:#101010; color:#eee; }
+  :host([data-black-friday]) .barra-superior { background:#080808; }
+  :host([data-black-friday]) .selector-moneda { background:#242424; color:#fff; }
+  :host([data-black-friday]) .selector-moneda button { background:#292929; color:#fff; border-color:#eab308; }
+  :host([data-black-friday]) .selector-moneda button[aria-pressed="true"] { background:#eab308; color:#111; }
+  :host([data-black-friday]) .navegacion { background:#181818; border-color:#444; }
+  :host([data-black-friday]) .navegacion button { color:#eee; }
+  :host([data-black-friday]) .navegacion button[aria-current="true"] { color:#facc15; border-bottom-color:#facc15; }
+  :host([data-black-friday]) .tarjeta { background:#222; color:#fff; border-color:#444; }
+  :host([data-black-friday]) .tarjeta .imagen { background:#303030; }
+  :host([data-black-friday]) .precio-rebajado { color:#facc15 !important; }
+  :host([data-black-friday]) .precio-anterior { color:#a3a3a3; }
+  :host([data-black-friday]) .filtros h3,:host([data-black-friday]) .contador { color:#d4d4d4; }
+  :host([data-black-friday]) .tallas button,:host([data-black-friday]) .limpiar { background:#262626; color:#fff; border-color:#555; }
+  :host([data-black-friday]) .tallas button[aria-pressed="true"] { background:#b91c1c; }
+  :host([data-black-friday]) .modal-contenido { background:#242424; color:#fff; }
+  :host([data-black-friday]) .modal-contenido h3 { color:#facc15; }
+  :host([data-black-friday]) .barra-admin { background:#222; color:#eee; border-color:#444; }
+  :host([data-black-friday]) .btn-anadir { background:#eab308; color:#111; }
+  :host([data-black-friday]) .btn-ver { background:#333; color:#fff; border-color:#888; }
+  :host([data-black-friday]) .boton-black-friday { background:#333; color:#facc15; }
+
 `;
