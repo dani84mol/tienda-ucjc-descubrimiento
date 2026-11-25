@@ -1,13 +1,12 @@
 import { CATEGORIAS, TALLAS, PRODUCTOS } from './productos.js';
 import { ESTILOS } from './estilos.js';
-// Nombre del evento según el contrato (PR #2 de tienda-ucjc-contratos)
+
 export const EVENTO_ANADIR_AL_CARRITO = 'ucjc:descubrimiento:anadir-al-carrito@1';
-// Evento que escuchamos (emisor: Identidad). Contrato firmado ucjc-identidad-sesion-cambiada@1
 export const EVENTO_SESION_CAMBIADA = 'ucjc:identidad:sesion-cambiada@1';
 
-const PRECIO_MAXIMO = { EUR: 60, USD: 70 };
+const PRECIO_MAXIMO = { EUR: 60, USD: 70, GBP: 50 };
+const TASA_GBP = 0.8345;
 
-// Estilos del aviso de "producto añadido / eliminado"
 const ESTILOS_AVISO = `
   .aviso {
     position: fixed;
@@ -48,16 +47,27 @@ class UcjcDescubrimiento extends HTMLElement {
       productoSeleccionado: null,
       usuarioActivo: null,
       esAdmin: false,
-      listaProductos: PRODUCTOS.map(p => ({ ...p, tallas: [...p.tallas] })),
+      listaProductos: PRODUCTOS.map((p) => ({ ...p, tallas: [...p.tallas] })),
     };
   }
 
   precioBaseProducto(producto) {
-    return this.estado.moneda === 'USD' ? producto.precioUSD : producto.precioEUR;
+    if (this.estado.moneda === 'USD') return producto.precioUSD;
+    if (this.estado.moneda === 'GBP') {
+      return producto.precioGBP ?? Math.floor(Math.round(producto.precioEUR * 100) * TASA_GBP + 1e-9) / 100;
+    }
+    return producto.precioEUR;
   }
 
   precioProducto(producto) {
     const base = this.precioBaseProducto(producto);
+    if (!this.estado.modoBlackFriday) return base;
+    const descuento = Number(producto.descuentoBF) || 0;
+    return Math.round(base * (100 - descuento)) / 100;
+  }
+
+  precioEnEuros(producto) {
+    const base = producto.precioEUR;
     if (!this.estado.modoBlackFriday) return base;
     const descuento = Number(producto.descuentoBF) || 0;
     return Math.round(base * (100 - descuento)) / 100;
@@ -84,13 +94,10 @@ class UcjcDescubrimiento extends HTMLElement {
     this.pintarProductos();
   }
 
-  // Escuchar cambios de sesión del equipo de Identidad.
-  // detail = { autenticado: true, usuario: { id, email, nombre? } }  o  { autenticado: false, usuario: null }
   escucharSesion() {
     window.addEventListener(EVENTO_SESION_CAMBIADA, (e) => {
       const { autenticado = false, usuario = null } = e.detail || {};
       this.estado.usuarioActivo = autenticado && usuario ? usuario : null;
-      // En @1 los roles NO viajan por el bus (lo dice el contrato), así que no sabemos si es admin.
       this.estado.esAdmin = false;
 
       this.actualizarBarraAdmin();
@@ -119,6 +126,7 @@ class UcjcDescubrimiento extends HTMLElement {
         <span>Moneda:</span>
         <button type="button" data-moneda="EUR" aria-pressed="true">€ EUR</button>
         <button type="button" data-moneda="USD" aria-pressed="false">$ USD</button>
+        <button type="button" data-moneda="GBP" aria-pressed="false">£ GBP</button>
       </div>
       <section class="franja-black-friday" aria-label="Promoción Black Friday">
         <div class="bf-titulo">
@@ -184,7 +192,6 @@ class UcjcDescubrimiento extends HTMLElement {
     const usuario = this.estado.usuarioActivo;
 
     if (!this.estado.esAdmin) {
-      // Barra de sesión: así se ve que reaccionamos al iniciar y cerrar sesión
       contenedorAdmin.innerHTML = `
         <div class="barra-admin" role="status">
           <span>${usuario
@@ -214,7 +221,6 @@ class UcjcDescubrimiento extends HTMLElement {
 
     const esNuevo = prod.id === 'nuevo';
 
-    // Nota: Eliminado el onclick inline para dejar que el evento suba correctamente al listener global
     contenedorModal.innerHTML = `
       <div class="modal-overlay" data-accion="cerrar">
         <div class="modal-contenido" role="dialog" aria-modal="true">
@@ -226,6 +232,7 @@ class UcjcDescubrimiento extends HTMLElement {
                   <label>Nombre: <input type="text" name="nombre" value="${esNuevo ? '' : prod.nombre}" required style="width:100%; padding:0.4rem;" /></label>
                   <label>Precio (€): <input type="number" step="0.01" name="precioEUR" value="${esNuevo ? '' : prod.precioEUR}" required style="width:100%; padding:0.4rem;" /></label>
                   <label>Precio ($): <input type="number" min="0" step="0.01" name="precioUSD" value="${esNuevo ? '' : prod.precioUSD}" required style="width:100%; padding:0.4rem;" /></label>
+                  <label>Precio (£): <input type="number" min="0" step="0.01" name="precioGBP" value="${esNuevo ? '' : (prod.precioGBP ?? '')}" required style="width:100%; padding:0.4rem;" /></label>
                   <label>Categoría: 
                     <select name="categoria" style="width:100%; padding:0.4rem;">
                       ${CATEGORIAS.map((c) => `<option value="${c.id}" ${prod.categoria === c.id ? 'selected' : ''}>${c.nombre}</option>`).join('')}
@@ -285,7 +292,7 @@ class UcjcDescubrimiento extends HTMLElement {
       this.actualizarModal();
     });
 
-    raiz.querySelector('.barra-busqueda').addEventListener('submit' , (e) => {
+    raiz.querySelector('.barra-busqueda').addEventListener('submit', (e) => {
       e.preventDefault();
       this.estado.busqueda = e.target.q.value.trim().toLowerCase();
       this.pintarProductos();
@@ -328,7 +335,7 @@ class UcjcDescubrimiento extends HTMLElement {
     raiz.addEventListener('click', (e) => {
       const btnAdmin = e.target.closest('[data-accion="nuevo-producto"]');
       if (btnAdmin) {
-        this.estado.productoSeleccionado = { id: 'nuevo', nombre: '', precioEUR: 0, precioUSD: 0, categoria: 'ropa', tallas: [] };
+        this.estado.productoSeleccionado = { id: 'nuevo', nombre: '', precioEUR: 0, precioUSD: 0, precioGBP: 0, categoria: 'ropa', tallas: [] };
         this.actualizarModal();
       }
     });
@@ -357,11 +364,8 @@ class UcjcDescubrimiento extends HTMLElement {
       }
     });
 
-    // Gestión limpia de eventos del modal (Cierre por botón o fondo, y edición)
     raiz.querySelector('#modal-container').addEventListener('click', (e) => {
-      // Si hacen clic en la caja blanca de dentro del modal, no cerramos
       if (e.target.closest('.modal-contenido') && !e.target.closest('[data-accion="cerrar"]')) {
-        // Comprobamos si es el botón de pasar a editar dentro del modal
         const accionEditar = e.target.closest('[data-accion="pasar-a-editar"]');
         if (accionEditar) {
           this.estado.productoSeleccionado.editando = true;
@@ -370,7 +374,6 @@ class UcjcDescubrimiento extends HTMLElement {
         return;
       }
 
-      // En cualquier otro caso (fondo sombreado o botón con data-accion="cerrar"), cerramos el modal
       this.estado.productoSeleccionado = null;
       this.actualizarModal();
     });
@@ -382,7 +385,8 @@ class UcjcDescubrimiento extends HTMLElement {
         const nombre = formData.get('nombre');
         const precioEUR = parseFloat(formData.get('precioEUR'));
         const precioUSD = parseFloat(formData.get('precioUSD'));
-        if (![precioEUR, precioUSD].every(p => Number.isFinite(p) && p >= 0)) return;
+        const precioGBP = parseFloat(formData.get('precioGBP'));
+        if (![precioEUR, precioUSD, precioGBP].every((p) => Number.isFinite(p) && p >= 0)) return;
         const categoria = formData.get('categoria');
 
         if (this.estado.productoSeleccionado.id === 'nuevo') {
@@ -391,6 +395,7 @@ class UcjcDescubrimiento extends HTMLElement {
             nombre,
             precioEUR,
             precioUSD,
+            precioGBP,
             categoria,
             tallas: ['M', 'L'],
           };
@@ -402,6 +407,7 @@ class UcjcDescubrimiento extends HTMLElement {
             prod.nombre = nombre;
             prod.precioEUR = precioEUR;
             prod.precioUSD = precioUSD;
+            prod.precioGBP = precioGBP;
             prod.categoria = categoria;
           }
         }
@@ -485,14 +491,12 @@ class UcjcDescubrimiento extends HTMLElement {
       : `<p class="vacio">No hay productos con estos filtros.</p>`;
   }
 
-  // Contrato ucjc:descubrimiento:anadir-al-carrito@1 (emisor: Descubrimiento, consumidor: Compra).
-  // Solo los 4 campos firmados: no añadir ni renombrar campos sin pasar por el repo de contratos.
   anadirAlCarrito(producto) {
     window.dispatchEvent(new CustomEvent(EVENTO_ANADIR_AL_CARRITO, {
       detail: {
         productoId: producto.id,
         nombre: producto.nombre,
-        precio: this.precioProducto(producto),
+        precio: this.precioEnEuros(producto),
         cantidad: 1,
       },
     }));
@@ -500,7 +504,6 @@ class UcjcDescubrimiento extends HTMLElement {
     this.mostrarAviso(`✅ Producto añadido: ${producto.nombre} — ${this.formatearPrecio(this.precioProducto(producto))}`, 'anadido');
   }
 
-  // Muestra un aviso abajo de la pantalla durante 2,5 segundos
   mostrarAviso(texto, tipo) {
     const aviso = this.shadowRoot.querySelector('.aviso');
     aviso.textContent = texto;
@@ -514,7 +517,6 @@ if (!customElements.get('ucjc-descubrimiento')) {
   customElements.define('ucjc-descubrimiento', UcjcDescubrimiento);
 }
 
-// Exportación requerida por el shell del curso
 export default {
   nombre: 'descubrimiento',
   version: '0.2.1'
