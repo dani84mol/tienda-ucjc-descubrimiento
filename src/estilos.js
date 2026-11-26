@@ -2,39 +2,39 @@
 // Se conservan todas las clases y atributos que usa main.js; solo cambia la presentación.
 export const ESTILOS = `
   /* ==========================================================
-     1. TOKENS (todo el diseño sale de aquí)
+     1. TOKENS (consumen --ucjc-* de la tienda con valor de reserva)
      ========================================================== */
   :host {
     /* Marca UCJC */
-    --azul: #16307a;
-    --azul-claro: #2f6bff;
-    --azul-suave: #eef3ff;
-    --oro: #e9b10c;
+    --azul: var(--ucjc-brand, #16307a);
+    --azul-claro: var(--ucjc-brand-bright, #2f6bff);
+    --azul-suave: var(--ucjc-brand-soft, #eef3ff);
+    --oro: var(--ucjc-accent, #e9b10c);
 
     /* Superficies y texto */
-    --fondo: #f6f7f9;
-    --superficie: #ffffff;
-    --gris: #eff1f5;
-    --borde: #e4e7ec;
-    --borde-fuerte: #cfd5df;
-    --texto: #0b1324;
-    --texto-2: #5b6578;
-    --texto-3: #8f98a8;
+    --fondo: var(--ucjc-bg, #f6f7f9);
+    --superficie: var(--ucjc-panel, #ffffff);
+    --gris: var(--ucjc-surface-alt, #eff1f5);
+    --borde: var(--ucjc-border, #e4e7ec);
+    --borde-fuerte: var(--ucjc-border-strong, #cfd5df);
+    --texto: var(--ucjc-text, #0b1324);
+    --texto-2: var(--ucjc-text-muted, #5b6578);
+    --texto-3: var(--ucjc-text-subtle, #8f98a8);
 
     /* Sistema */
-    --r-sm: 8px;
-    --r-md: 12px;
-    --r-lg: 18px;
-    --r-full: 999px;
-    --sombra-sm: 0 1px 2px rgba(11, 19, 36, .06);
-    --sombra-md: 0 12px 28px -12px rgba(11, 19, 36, .22);
-    --sombra-lg: 0 28px 60px -18px rgba(11, 19, 36, .35);
+    --r-sm: var(--ucjc-radius-sm, 8px);
+    --r-md: var(--ucjc-radius, 12px);
+    --r-lg: var(--ucjc-radius-lg, 18px);
+    --r-full: var(--ucjc-radius-full, 999px);
+    --sombra-sm: var(--ucjc-shadow-sm, 0 1px 2px rgba(11, 19, 36, .06));
+    --sombra-md: var(--ucjc-shadow-md, 0 12px 28px -12px rgba(11, 19, 36, .22));
+    --sombra-lg: var(--ucjc-shadow-lg, 0 28px 60px -18px rgba(11, 19, 36, .35));
     --rapido: 160ms cubic-bezier(.22, 1, .36, 1);
     --medio: 240ms cubic-bezier(.22, 1, .36, 1);
 
     display: block;
     min-height: 100vh;
-    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-family: var(--ucjc-font-sans, "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif);
     font-size: 15px;
     line-height: 1.5;
     color: var(--texto);
@@ -62,7 +62,7 @@ export const ESTILOS = `
       var(--azul);
     box-shadow: 0 1px 0 rgba(255, 255, 255, .06), 0 8px 24px -16px rgba(11, 19, 36, .6);
   }
-  .lateral { display: flex; align-items: center; min-height: 2.5rem; color: white; }
+  .lateral { display: flex; align-items: center; min-height: 2.5rem; color: #ffffff; }
   .lateral-izq { justify-content: flex-start; }
   .lateral-der { justify-content: flex-end; }
   .hueco {
@@ -88,7 +88,7 @@ export const ESTILOS = `
     background:
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%238f98a8' stroke-width='2' stroke-linecap='round' viewBox='0 0 24 24'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E")
       no-repeat 1rem center,
-      white;
+      var(--superficie);
     transition: box-shadow var(--rapido);
   }
   .barra-busqueda:focus-within { box-shadow: 0 0 0 4px rgba(47, 107, 255, .4); }
@@ -107,7 +107,7 @@ export const ESTILOS = `
     border: none;
     border-radius: var(--r-full);
     background: var(--azul);
-    color: white;
+    color: var(--superficie);
     font-weight: 600;
     cursor: pointer;
     transition: background var(--rapido), transform var(--rapido);
@@ -161,7 +161,7 @@ export const ESTILOS = `
     flex-wrap: wrap;
     gap: 1rem;
     padding: 1.1rem 2rem;
-    color: white;
+    color: #ffffff;
     background:
       repeating-linear-gradient(-45deg, rgba(233, 177, 12, .07) 0 12px, transparent 12px 24px),
       #0c0c0e;
@@ -189,7 +189,7 @@ export const ESTILOS = `
     border: 1px solid var(--oro);
     border-radius: var(--r-full);
     background: var(--oro);
-    color: #111;
+    color: #111111;
     font-weight: 800;
     letter-spacing: .02em;
     cursor: pointer;
@@ -209,7 +209,7 @@ export const ESTILOS = `
     gap: 1rem;
     padding: .6rem 2rem;
     background: var(--azul-suave);
-    border-bottom: 1px solid #dbe4ff;
+    border-bottom: 1px solid var(--borde);
     color: var(--azul);
     font-size: .85rem;
     font-weight: 500;
@@ -219,7 +219,7 @@ export const ESTILOS = `
     border: none;
     border-radius: var(--r-full);
     background: var(--azul);
-    color: white;
+    color: var(--superficie);
     font-weight: 600;
     cursor: pointer;
     transition: background var(--rapido), transform var(--rapido);
@@ -257,7 +257,7 @@ export const ESTILOS = `
   .navegacion button[aria-current="true"] {
     background: var(--texto);
     border-color: var(--texto);
-    color: white;
+    color: var(--superficie);
     font-weight: 600;
   }
 
@@ -332,7 +332,11 @@ export const ESTILOS = `
   }
   .tallas button:hover { border-color: var(--borde-fuerte); color: var(--texto); }
   .tallas button:active { transform: scale(.94); }
-  .tallas button[aria-pressed="true"] { background: var(--texto); border-color: var(--texto); color: white; }
+  .tallas button[aria-pressed="true"] {
+    background: var(--texto);
+    border-color: var(--texto);
+    color: var(--superficie);
+  }
 
   .limpiar {
     margin-top: 1.25rem;
@@ -416,7 +420,7 @@ export const ESTILOS = `
     background:
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' fill='none' stroke='%23b4bccb' stroke-width='1.4' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='M5 8h14l-1 12H6L5 8Z'/%3E%3Cpath d='M9 8V6a3 3 0 0 1 6 0v2'/%3E%3C/svg%3E")
       no-repeat center,
-      linear-gradient(160deg, #f3f5f9, #e6eaf1);
+      linear-gradient(160deg, var(--fondo), var(--gris));
     transition: transform var(--medio);
   }
   .tarjeta:hover .imagen { transform: scale(1.015); }
@@ -452,7 +456,7 @@ export const ESTILOS = `
   .tarjeta .acciones button:active { transform: scale(.96); }
   .btn-ver { flex: 0 0 auto; min-width: 4.5rem; border: 1px solid var(--borde); background: var(--superficie); color: var(--texto); }
   .btn-ver:hover { border-color: var(--borde-fuerte); background: var(--gris); }
-  .btn-anadir { flex: 1; border: 1px solid var(--azul); background: var(--azul); color: white; }
+  .btn-anadir { flex: 1; border: 1px solid var(--azul); background: var(--azul); color: var(--superficie); }
   .btn-anadir::before { content: "+ "; font-weight: 700; }
   .btn-anadir:hover { background: var(--azul-claro); border-color: var(--azul-claro); }
 
@@ -467,9 +471,9 @@ export const ESTILOS = `
     transition: background var(--rapido), color var(--rapido), border-color var(--rapido);
   }
   .btn-editar { background: #fff8eb; color: #b45309; border: 1px solid #fde4b3; }
-  .btn-editar:hover { background: #f59e0b; border-color: #f59e0b; color: white; }
+  .btn-editar:hover { background: #f59e0b; border-color: #f59e0b; color: #ffffff; }
   .btn-eliminar { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
-  .btn-eliminar:hover { background: #dc2626; border-color: #dc2626; color: white; }
+  .btn-eliminar:hover { background: #dc2626; border-color: #dc2626; color: #ffffff; }
 
   .vacio {
     grid-column: 1 / -1;
@@ -484,13 +488,14 @@ export const ESTILOS = `
   /* Precios con descuento (Black Friday) */
   .precios-tarjeta, .precios-modal { display: flex; align-items: baseline; flex-wrap: wrap; gap: .25rem .55rem; }
   .precio-anterior { text-decoration: line-through; color: var(--texto-3); font-size: .85rem; }
-  .precio-rebajado { color: #c81e1e !important; font-weight: 800; }
+  .tarjeta .precio.precio-rebajado,
+  .modal-contenido .precio.precio-rebajado { color: #c81e1e; font-weight: 800; }
   .descuento-bf {
     align-self: center;
     padding: .12rem .5rem;
     border-radius: var(--r-full);
     background: #c81e1e;
-    color: white;
+    color: var(--superficie);
     font-size: .7rem;
     font-weight: 800;
     letter-spacing: .02em;
@@ -519,7 +524,7 @@ export const ESTILOS = `
     max-height: calc(100vh - 2rem);
     overflow-y: auto;
     padding: 2rem;
-    border-radius: 22px;
+    border-radius: calc(var(--r-lg) + 4px);
     background: var(--superficie);
     box-shadow: var(--sombra-lg);
     animation: subir 260ms cubic-bezier(.22, 1, .36, 1);
@@ -581,25 +586,25 @@ export const ESTILOS = `
   :host([data-black-friday]) .barra-superior {
     background: radial-gradient(120% 140% at 0% 0%, rgba(233, 177, 12, .18), transparent 55%), #050506;
   }
-  :host([data-black-friday]) .barra-busqueda { background-color: #1d1d21; }
+  :host([data-black-friday]) .barra-busqueda { background-color: var(--gris); }
   :host([data-black-friday]) .barra-busqueda button,
   :host([data-black-friday]) .btn-anadir,
-  :host([data-black-friday]) .btn-admin { background: var(--oro); border-color: var(--oro); color: #111; }
+  :host([data-black-friday]) .btn-admin { background: var(--oro); border-color: var(--oro); color: #111111; }
   :host([data-black-friday]) .btn-anadir:hover,
   :host([data-black-friday]) .btn-admin:hover { background: #f6c935; border-color: #f6c935; }
   :host([data-black-friday]) .selector-moneda button[aria-pressed="true"] { color: var(--oro); }
   :host([data-black-friday]) .navegacion button[aria-current="true"],
-  :host([data-black-friday]) .tallas button[aria-pressed="true"] { background: var(--oro); border-color: var(--oro); color: #111; }
+  :host([data-black-friday]) .tallas button[aria-pressed="true"] { background: var(--oro); border-color: var(--oro); color: #111111; }
   :host([data-black-friday]) .tarjeta .imagen {
     background:
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' fill='none' stroke='%2352525b' stroke-width='1.4' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='M5 8h14l-1 12H6L5 8Z'/%3E%3Cpath d='M9 8V6a3 3 0 0 1 6 0v2'/%3E%3C/svg%3E")
       no-repeat center,
-      linear-gradient(160deg, #1d1d21, #26262b);
+      linear-gradient(160deg, var(--gris), #26262b);
   }
   :host([data-black-friday]) .tarjeta:hover { box-shadow: 0 16px 36px -14px rgba(0, 0, 0, .8), 0 0 0 1px rgba(233, 177, 12, .25); }
-  :host([data-black-friday]) .precio-rebajado,
-  :host([data-black-friday]) .modal-contenido .precio { color: var(--oro) !important; }
-  :host([data-black-friday]) .descuento-bf { background: var(--oro); color: #111; }
+  :host([data-black-friday]) .tarjeta .precio.precio-rebajado,
+  :host([data-black-friday]) .modal-contenido .precio { color: var(--oro); }
+  :host([data-black-friday]) .descuento-bf { background: var(--oro); color: #111111; }
   :host([data-black-friday]) .barra-admin { color: var(--texto-2); border-color: var(--borde); }
   :host([data-black-friday]) .limpiar { color: var(--oro); }
   :host([data-black-friday]) .boton-black-friday { background: transparent; color: var(--oro); }
