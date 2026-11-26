@@ -2,6 +2,8 @@ import { CATEGORIAS, TALLAS, PRODUCTOS } from './productos.js';
 import { ESTILOS } from './estilos.js';
 
 export const EVENTO_ANADIR_AL_CARRITO = 'ucjc:descubrimiento:anadir-al-carrito@1';
+// Contrato firmado: Descubrimiento informa a Compra y Datos del estado de la campaña.
+export const EVENTO_CAMPANA_CAMBIADA = 'ucjc:descubrimiento:campana-cambiada@1';
 export const EVENTO_SESION_CAMBIADA = 'ucjc:identidad:sesion-cambiada@1';
 
 const PRECIO_MAXIMO = { EUR: 60, USD: 70, GBP: 50 };
@@ -87,11 +89,24 @@ class UcjcDescubrimiento extends HTMLElement {
     return new Intl.NumberFormat('es-ES', { style: 'currency', currency: this.estado.moneda }).format(precio);
   }
 
+  notificarCampana() {
+    window.dispatchEvent(new CustomEvent(EVENTO_CAMPANA_CAMBIADA, {
+      detail: {
+        activa: this.estado.modoBlackFriday,
+        codigo: 'black-friday-2026',
+        etiqueta: 'Black Friday UCJC',
+        momento: new Date().toISOString(),
+      },
+    }));
+  }
+
   connectedCallback() {
     this.pintarEstructura();
     this.conectarEventos();
     this.escucharSesion();
     this.pintarProductos();
+    // El contrato exige anunciar el estado inicial de la campaña.
+    this.notificarCampana();
   }
 
   escucharSesion() {
@@ -274,6 +289,8 @@ class UcjcDescubrimiento extends HTMLElement {
       boton.setAttribute('aria-pressed', String(activo));
       this.pintarProductos();
       this.actualizarModal();
+      // Compra recibe el nuevo estado para mostrar Black Friday.
+      this.notificarCampana();
     });
 
     raiz.querySelector('.selector-moneda').addEventListener('click', (e) => {
@@ -492,6 +509,8 @@ class UcjcDescubrimiento extends HTMLElement {
   }
 
   anadirAlCarrito(producto) {
+    // Reafirmar la campaña justo antes del precio: útil si Compra se ha montado después.
+    this.notificarCampana();
     window.dispatchEvent(new CustomEvent(EVENTO_ANADIR_AL_CARRITO, {
       detail: {
         productoId: producto.id,
