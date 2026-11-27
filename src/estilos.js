@@ -10,6 +10,7 @@ export const ESTILOS = `
     --azul-claro: var(--ucjc-brand-bright, #2f6bff);
     --azul-suave: var(--ucjc-brand-soft, #eef3ff);
     --oro: var(--ucjc-accent, #e9b10c);
+    --oro-brillo: var(--ucjc-accent-bright, #f6d365);
 
     /* Superficies y texto */
     --fondo: var(--ucjc-bg, #f6f7f9);
@@ -20,6 +21,19 @@ export const ESTILOS = `
     --texto: var(--ucjc-text, #0b1324);
     --texto-2: var(--ucjc-text-muted, #5b6578);
     --texto-3: var(--ucjc-text-subtle, #8f98a8);
+    --texto-inverso: var(--ucjc-text-inverse, #ffffff);
+
+    /* Semánticos (descuentos, edición, borrado y campaña) */
+    --peligro: var(--ucjc-danger, #c81e1e);
+    --peligro-suave: var(--ucjc-danger-soft, #fef2f2);
+    --peligro-borde: var(--ucjc-danger-border, #fecaca);
+    --aviso: var(--ucjc-warning, #b45309);
+    --aviso-intenso: var(--ucjc-warning-bright, #f59e0b);
+    --aviso-suave: var(--ucjc-warning-soft, #fff8eb);
+    --aviso-borde: var(--ucjc-warning-border, #fde4b3);
+    --campana-bg: var(--ucjc-campaign-bg, #0c0c0e);
+    --campana-texto: var(--ucjc-campaign-text, #ffffff);
+    --campana-texto-suave: var(--ucjc-campaign-text-muted, #a1a1aa);
 
     /* Sistema */
     --r-sm: var(--ucjc-radius-sm, 8px);
@@ -58,24 +72,27 @@ export const ESTILOS = `
     gap: 1rem;
     padding: .85rem 2rem;
     background:
-      radial-gradient(120% 140% at 0% 0%, rgba(47, 107, 255, .35), transparent 55%),
+      radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--azul-claro) 35%, transparent), transparent 55%),
       var(--azul);
-    box-shadow: 0 1px 0 rgba(255, 255, 255, .06), 0 8px 24px -16px rgba(11, 19, 36, .6);
+    box-shadow:
+      0 1px 0 color-mix(in srgb, var(--texto-inverso) 6%, transparent),
+      var(--sombra-md);
   }
-  .lateral { display: flex; align-items: center; min-height: 2.5rem; color: #ffffff; }
+  .lateral { display: flex; align-items: center; min-height: 2.5rem; color: var(--texto-inverso); }
   .lateral-izq { justify-content: flex-start; }
   .lateral-der { justify-content: flex-end; }
   .hueco {
     padding: .45rem .9rem;
-    border: 1px solid rgba(255, 255, 255, .18);
+    border: 1px solid color-mix(in srgb, var(--texto-inverso) 18%, transparent);
     border-radius: var(--r-full);
-    background: rgba(255, 255, 255, .08);
-    color: rgba(255, 255, 255, .9);
+    background: color-mix(in srgb, var(--texto-inverso) 8%, transparent);
+    color: color-mix(in srgb, var(--texto-inverso) 90%, transparent);
     font-size: .85rem;
     font-weight: 500;
   }
 
   .barra-busqueda {
+    position: relative;
     display: flex;
     align-items: center;
     gap: .25rem;
@@ -84,14 +101,23 @@ export const ESTILOS = `
     margin: 0 auto;
     padding: .3rem .3rem .3rem 2.6rem;
     border-radius: var(--r-full);
-    /* Lupa dibujada con SVG en el fondo: no hace falta tocar el HTML */
-    background:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%238f98a8' stroke-width='2' stroke-linecap='round' viewBox='0 0 24 24'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E")
-      no-repeat 1rem center,
-      var(--superficie);
-    transition: box-shadow var(--rapido);
+    background: var(--superficie);
   }
-  .barra-busqueda:focus-within { box-shadow: 0 0 0 4px rgba(47, 107, 255, .4); }
+  /* Lupa pintada con máscara para heredar exactamente el token --texto-3 */
+  .barra-busqueda::before {
+    content: "";
+    position: absolute;
+    left: 1rem;
+    width: 18px;
+    height: 18px;
+    background-color: var(--texto-3);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") no-repeat center / contain;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") no-repeat center / contain;
+    pointer-events: none;
+  }
+  .barra-busqueda:focus-within {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--azul-claro) 40%, transparent);
+  }
   .barra-busqueda input {
     flex: 1;
     min-width: 0;
@@ -107,10 +133,9 @@ export const ESTILOS = `
     border: none;
     border-radius: var(--r-full);
     background: var(--azul);
-    color: var(--superficie);
+    color: var(--texto-inverso);
     font-weight: 600;
     cursor: pointer;
-    transition: background var(--rapido), transform var(--rapido);
   }
   .barra-busqueda button:hover { background: var(--azul-claro); }
   .barra-busqueda button:active { transform: scale(.96); }
@@ -139,7 +164,6 @@ export const ESTILOS = `
     font-size: .8rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background var(--rapido), color var(--rapido), box-shadow var(--rapido);
   }
   .selector-moneda button:hover { color: var(--texto); }
   .selector-moneda button[aria-pressed="true"] {
@@ -161,10 +185,14 @@ export const ESTILOS = `
     flex-wrap: wrap;
     gap: 1rem;
     padding: 1.1rem 2rem;
-    color: #ffffff;
+    color: var(--campana-texto);
     background:
-      repeating-linear-gradient(-45deg, rgba(233, 177, 12, .07) 0 12px, transparent 12px 24px),
-      #0c0c0e;
+      repeating-linear-gradient(
+        -45deg,
+        color-mix(in srgb, var(--oro) 7%, transparent) 0 12px,
+        transparent 12px 24px
+      ),
+      var(--campana-bg);
   }
   .franja-black-friday::after {
     content: "";
@@ -178,24 +206,27 @@ export const ESTILOS = `
     font-size: 1.15rem;
     font-weight: 800;
     letter-spacing: .22em;
-    background: linear-gradient(90deg, #fff 30%, #f6d365);
+    background: linear-gradient(90deg, var(--campana-texto) 30%, var(--oro-brillo));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
-  .bf-titulo span { color: #a1a1aa; font-size: .85rem; }
+  .bf-titulo span { color: var(--campana-texto-suave); font-size: .85rem; }
   .boton-black-friday {
     padding: .65rem 1.25rem;
     border: 1px solid var(--oro);
     border-radius: var(--r-full);
     background: var(--oro);
-    color: #111111;
+    color: var(--campana-bg);
     font-weight: 800;
     letter-spacing: .02em;
     cursor: pointer;
-    transition: transform var(--rapido), box-shadow var(--rapido), background var(--rapido);
   }
-  .boton-black-friday:hover { box-shadow: 0 0 0 5px rgba(233, 177, 12, .22), 0 0 24px rgba(233, 177, 12, .35); }
+  .boton-black-friday:hover {
+    box-shadow:
+      0 0 0 5px color-mix(in srgb, var(--oro) 22%, transparent),
+      0 0 24px color-mix(in srgb, var(--oro) 35%, transparent);
+  }
   .boton-black-friday:active { transform: scale(.96); }
 
   /* ==========================================================
@@ -219,10 +250,9 @@ export const ESTILOS = `
     border: none;
     border-radius: var(--r-full);
     background: var(--azul);
-    color: var(--superficie);
+    color: var(--texto-inverso);
     font-weight: 600;
     cursor: pointer;
-    transition: background var(--rapido), transform var(--rapido);
   }
   .btn-admin:hover { background: var(--azul-claro); }
   .btn-admin:active { transform: scale(.96); }
@@ -250,7 +280,6 @@ export const ESTILOS = `
     font-weight: 500;
     white-space: nowrap;
     cursor: pointer;
-    transition: background var(--rapido), color var(--rapido), border-color var(--rapido), transform var(--rapido);
   }
   .navegacion button:hover { border-color: var(--borde-fuerte); color: var(--texto); }
   .navegacion button:active { transform: scale(.96); }
@@ -311,7 +340,6 @@ export const ESTILOS = `
     border-radius: var(--r-sm);
     color: var(--texto-2);
     cursor: pointer;
-    transition: background var(--rapido), color var(--rapido);
   }
   .filtros label:hover { background: var(--gris); color: var(--texto); }
   .filtros label:has(input:checked) { color: var(--texto); font-weight: 600; }
@@ -328,7 +356,6 @@ export const ESTILOS = `
     font-size: .82rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background var(--rapido), border-color var(--rapido), color var(--rapido), transform var(--rapido);
   }
   .tallas button:hover { border-color: var(--borde-fuerte); color: var(--texto); }
   .tallas button:active { transform: scale(.94); }
@@ -348,7 +375,6 @@ export const ESTILOS = `
     font-weight: 600;
     text-align: left;
     cursor: pointer;
-    transition: background var(--rapido);
   }
   .limpiar:hover { background: var(--azul-suave); }
 
@@ -372,14 +398,11 @@ export const ESTILOS = `
     padding: .5rem 2.2rem .5rem .9rem;
     border: 1px solid var(--borde);
     border-radius: var(--r-full);
-    background:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%235b6578' stroke-width='2' stroke-linecap='round' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")
-      no-repeat right .85rem center,
-      var(--superficie);
+    background-color: var(--superficie);
+    color: var(--texto);
     font-size: .85rem;
     font-weight: 500;
     cursor: pointer;
-    transition: border-color var(--rapido);
   }
   .cabecera-resultados select:hover { border-color: var(--borde-fuerte); }
 
@@ -399,29 +422,31 @@ export const ESTILOS = `
     border-radius: var(--r-lg);
     background: var(--superficie);
     box-shadow: var(--sombra-sm);
-    transition: transform var(--medio), box-shadow var(--medio), border-color var(--medio);
-    animation: entrar 320ms cubic-bezier(.22, 1, .36, 1) both;
   }
-  .tarjeta:nth-child(2) { animation-delay: 30ms; }
-  .tarjeta:nth-child(3) { animation-delay: 60ms; }
-  .tarjeta:nth-child(4) { animation-delay: 90ms; }
-  .tarjeta:nth-child(n+5) { animation-delay: 120ms; }
   .tarjeta:hover {
     transform: translateY(-4px);
     border-color: var(--borde-fuerte);
     box-shadow: var(--sombra-md);
   }
 
-  /* Imagen: el texto "Imagen" se oculta y se muestra un icono de bolsa */
+  /* Imagen: el texto "Imagen" se oculta y se muestra un icono de bolsa con token */
   .tarjeta .imagen {
+    position: relative;
     aspect-ratio: 4 / 5;
     border-radius: calc(var(--r-lg) - .45rem);
     font-size: 0;
-    background:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' fill='none' stroke='%23b4bccb' stroke-width='1.4' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='M5 8h14l-1 12H6L5 8Z'/%3E%3Cpath d='M9 8V6a3 3 0 0 1 6 0v2'/%3E%3C/svg%3E")
-      no-repeat center,
-      linear-gradient(160deg, var(--fondo), var(--gris));
-    transition: transform var(--medio);
+    background: linear-gradient(160deg, var(--fondo), var(--gris));
+  }
+  .tarjeta .imagen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 44px;
+    height: 44px;
+    background-color: var(--texto-3);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.4' stroke-linejoin='round'%3E%3Cpath d='M5 8h14l-1 12H6L5 8Z'/%3E%3Cpath d='M9 8V6a3 3 0 0 1 6 0v2'/%3E%3C/svg%3E") no-repeat center / contain;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.4' stroke-linejoin='round'%3E%3Cpath d='M5 8h14l-1 12H6L5 8Z'/%3E%3Cpath d='M9 8V6a3 3 0 0 1 6 0v2'/%3E%3C/svg%3E") no-repeat center / contain;
   }
   .tarjeta:hover .imagen { transform: scale(1.015); }
 
@@ -451,12 +476,11 @@ export const ESTILOS = `
     font-size: .85rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background var(--rapido), color var(--rapido), border-color var(--rapido), transform var(--rapido);
   }
   .tarjeta .acciones button:active { transform: scale(.96); }
   .btn-ver { flex: 0 0 auto; min-width: 4.5rem; border: 1px solid var(--borde); background: var(--superficie); color: var(--texto); }
   .btn-ver:hover { border-color: var(--borde-fuerte); background: var(--gris); }
-  .btn-anadir { flex: 1; border: 1px solid var(--azul); background: var(--azul); color: var(--superficie); }
+  .btn-anadir { flex: 1; border: 1px solid var(--azul); background: var(--azul); color: var(--texto-inverso); }
   .btn-anadir::before { content: "+ "; font-weight: 700; }
   .btn-anadir:hover { background: var(--azul-claro); border-color: var(--azul-claro); }
 
@@ -468,12 +492,11 @@ export const ESTILOS = `
     font-size: .78rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background var(--rapido), color var(--rapido), border-color var(--rapido);
   }
-  .btn-editar { background: #fff8eb; color: #b45309; border: 1px solid #fde4b3; }
-  .btn-editar:hover { background: #f59e0b; border-color: #f59e0b; color: #ffffff; }
-  .btn-eliminar { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
-  .btn-eliminar:hover { background: #dc2626; border-color: #dc2626; color: #ffffff; }
+  .btn-editar { background: var(--aviso-suave); color: var(--aviso); border: 1px solid var(--aviso-borde); }
+  .btn-editar:hover { background: var(--aviso-intenso); border-color: var(--aviso-intenso); color: var(--texto-inverso); }
+  .btn-eliminar { background: var(--peligro-suave); color: var(--peligro); border: 1px solid var(--peligro-borde); }
+  .btn-eliminar:hover { background: var(--peligro); border-color: var(--peligro); color: var(--texto-inverso); }
 
   .vacio {
     grid-column: 1 / -1;
@@ -489,13 +512,13 @@ export const ESTILOS = `
   .precios-tarjeta, .precios-modal { display: flex; align-items: baseline; flex-wrap: wrap; gap: .25rem .55rem; }
   .precio-anterior { text-decoration: line-through; color: var(--texto-3); font-size: .85rem; }
   .tarjeta .precio.precio-rebajado,
-  .modal-contenido .precio.precio-rebajado { color: #c81e1e; font-weight: 800; }
+  .modal-contenido .precio.precio-rebajado { color: var(--peligro); font-weight: 800; }
   .descuento-bf {
     align-self: center;
     padding: .12rem .5rem;
     border-radius: var(--r-full);
-    background: #c81e1e;
-    color: var(--superficie);
+    background: var(--peligro);
+    color: var(--texto-inverso);
     font-size: .7rem;
     font-weight: 800;
     letter-spacing: .02em;
@@ -511,9 +534,8 @@ export const ESTILOS = `
     display: grid;
     place-items: center;
     padding: 1rem;
-    background: rgba(11, 19, 36, .5);
+    background: color-mix(in srgb, var(--texto) 50%, transparent);
     backdrop-filter: blur(6px);
-    animation: aparecer 180ms ease-out;
   }
   .modal-contenido {
     display: flex;
@@ -527,7 +549,6 @@ export const ESTILOS = `
     border-radius: calc(var(--r-lg) + 4px);
     background: var(--superficie);
     box-shadow: var(--sombra-lg);
-    animation: subir 260ms cubic-bezier(.22, 1, .36, 1);
   }
   .modal-contenido h3 { margin: 0; font-size: 1.5rem; font-weight: 700; letter-spacing: -.015em; color: var(--texto); }
   .modal-contenido p { margin: 0; color: var(--texto-2); }
@@ -539,12 +560,11 @@ export const ESTILOS = `
     border-radius: var(--r-sm);
     background: var(--superficie);
     color: var(--texto);
-    transition: border-color var(--rapido), box-shadow var(--rapido);
   }
   .modal-contenido input:focus, .modal-contenido select:focus {
     outline: none;
     border-color: var(--azul-claro);
-    box-shadow: 0 0 0 3px rgba(47, 107, 255, .2);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--azul-claro) 20%, transparent);
   }
 
   .btn-cerrar-modal {
@@ -556,16 +576,45 @@ export const ESTILOS = `
     color: var(--texto);
     font-weight: 600;
     cursor: pointer;
-    transition: background var(--rapido);
   }
   .btn-cerrar-modal:hover { background: var(--borde); }
 
   /* ==========================================================
-     10. FOCO Y ANIMACIONES
+     10. FOCO Y ANIMACIONES (sin !important)
      ========================================================== */
   button:focus-visible, input:focus-visible, select:focus-visible {
     outline: 2px solid var(--azul-claro);
     outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .barra-busqueda,
+    .modal-contenido input,
+    .modal-contenido select { transition: border-color var(--rapido), box-shadow var(--rapido); }
+    .barra-busqueda button,
+    .btn-admin { transition: background var(--rapido), transform var(--rapido); }
+    .selector-moneda button { transition: background var(--rapido), color var(--rapido), box-shadow var(--rapido); }
+    .boton-black-friday { transition: transform var(--rapido), box-shadow var(--rapido), background var(--rapido); }
+    .navegacion button,
+    .tallas button,
+    .tarjeta .acciones button { transition: background var(--rapido), color var(--rapido), border-color var(--rapido), transform var(--rapido); }
+    .filtros label { transition: background var(--rapido), color var(--rapido); }
+    .limpiar,
+    .btn-cerrar-modal { transition: background var(--rapido); }
+    .cabecera-resultados select { transition: border-color var(--rapido); }
+    .btn-editar,
+    .btn-eliminar { transition: background var(--rapido), color var(--rapido), border-color var(--rapido); }
+    .tarjeta {
+      transition: transform var(--medio), box-shadow var(--medio), border-color var(--medio);
+      animation: entrar 320ms cubic-bezier(.22, 1, .36, 1) both;
+    }
+    .tarjeta:nth-child(2) { animation-delay: 30ms; }
+    .tarjeta:nth-child(3) { animation-delay: 60ms; }
+    .tarjeta:nth-child(4) { animation-delay: 90ms; }
+    .tarjeta:nth-child(n+5) { animation-delay: 120ms; }
+    .tarjeta .imagen { transition: transform var(--medio); }
+    .modal-overlay { animation: aparecer 180ms ease-out; }
+    .modal-contenido { animation: subir 260ms cubic-bezier(.22, 1, .36, 1); }
   }
 
   @keyframes entrar { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
@@ -573,42 +622,45 @@ export const ESTILOS = `
   @keyframes subir { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
 
   /* ==========================================================
-     11. TEMA BLACK FRIDAY (limitado al Shadow DOM)
+     11. TEMA BLACK FRIDAY (solo tokens, sin colores a mano)
      ========================================================== */
-  :host([data-black-friday]) {
-    --azul: #f2f2f2; --azul-claro: var(--oro); --azul-suave: #17171a;
-    --fondo: #0b0b0d; --superficie: #141417; --gris: #1d1d21;
-    --borde: #27272c; --borde-fuerte: #3a3a41;
-    --texto: #f4f4f5; --texto-2: #a1a1aa; --texto-3: #71717a;
-    background: var(--fondo);
-    color: var(--texto);
-  }
   :host([data-black-friday]) .barra-superior {
-    background: radial-gradient(120% 140% at 0% 0%, rgba(233, 177, 12, .18), transparent 55%), #050506;
+    background:
+      radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--oro) 18%, transparent), transparent 55%),
+      var(--campana-bg);
   }
   :host([data-black-friday]) .barra-busqueda { background-color: var(--gris); }
   :host([data-black-friday]) .barra-busqueda button,
   :host([data-black-friday]) .btn-anadir,
-  :host([data-black-friday]) .btn-admin { background: var(--oro); border-color: var(--oro); color: #111111; }
+  :host([data-black-friday]) .btn-admin {
+    background: var(--oro);
+    border-color: var(--oro);
+    color: var(--campana-bg);
+  }
   :host([data-black-friday]) .btn-anadir:hover,
-  :host([data-black-friday]) .btn-admin:hover { background: #f6c935; border-color: #f6c935; }
+  :host([data-black-friday]) .btn-admin:hover {
+    background: var(--oro-brillo);
+    border-color: var(--oro-brillo);
+  }
   :host([data-black-friday]) .selector-moneda button[aria-pressed="true"] { color: var(--oro); }
   :host([data-black-friday]) .navegacion button[aria-current="true"],
-  :host([data-black-friday]) .tallas button[aria-pressed="true"] { background: var(--oro); border-color: var(--oro); color: #111111; }
-  :host([data-black-friday]) .tarjeta .imagen {
-    background:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' fill='none' stroke='%2352525b' stroke-width='1.4' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='M5 8h14l-1 12H6L5 8Z'/%3E%3Cpath d='M9 8V6a3 3 0 0 1 6 0v2'/%3E%3C/svg%3E")
-      no-repeat center,
-      linear-gradient(160deg, var(--gris), #26262b);
+  :host([data-black-friday]) .tallas button[aria-pressed="true"] {
+    background: var(--oro);
+    border-color: var(--oro);
+    color: var(--campana-bg);
   }
-  :host([data-black-friday]) .tarjeta:hover { box-shadow: 0 16px 36px -14px rgba(0, 0, 0, .8), 0 0 0 1px rgba(233, 177, 12, .25); }
+  :host([data-black-friday]) .tarjeta:hover {
+    box-shadow: var(--sombra-lg), 0 0 0 1px color-mix(in srgb, var(--oro) 25%, transparent);
+  }
   :host([data-black-friday]) .tarjeta .precio.precio-rebajado,
   :host([data-black-friday]) .modal-contenido .precio { color: var(--oro); }
-  :host([data-black-friday]) .descuento-bf { background: var(--oro); color: #111111; }
+  :host([data-black-friday]) .descuento-bf { background: var(--oro); color: var(--campana-bg); }
   :host([data-black-friday]) .barra-admin { color: var(--texto-2); border-color: var(--borde); }
   :host([data-black-friday]) .limpiar { color: var(--oro); }
   :host([data-black-friday]) .boton-black-friday { background: transparent; color: var(--oro); }
-  :host([data-black-friday]) .boton-black-friday:hover { background: rgba(233, 177, 12, .12); }
+  :host([data-black-friday]) .boton-black-friday:hover {
+    background: color-mix(in srgb, var(--oro) 12%, transparent);
+  }
 
   /* ==========================================================
      12. RESPONSIVE
@@ -628,9 +680,5 @@ export const ESTILOS = `
     .tarjeta { padding: .45rem; }
     .tarjeta .acciones { flex-direction: column; }
     .btn-ver { min-width: 0; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation: none !important; transition: none !important; }
   }
 `;
