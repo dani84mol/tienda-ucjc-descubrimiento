@@ -8,10 +8,6 @@ on:
 permissions:
   contents: write
 
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -19,6 +15,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
 
       - name: Setup Node
@@ -33,7 +30,7 @@ jobs:
           git fetch --tags
           LATEST_TAG=$(git tag -l "v0.2.*" --sort=-v:refname | head -n 1)
           if [ -z "$LATEST_TAG" ]; then
-            NEXT_TAG="v0.1.0"
+            NEXT_TAG="v0.2.1"
           else
             VERSION=${LATEST_TAG#v}
             MAJOR=$(echo $VERSION | cut -d. -f1)
@@ -52,27 +49,28 @@ jobs:
           VITE_BASE_PATH: /tienda-ucjc-descubrimiento/${{ steps.version.outputs.next_tag }}/
         run: npm run build
 
-      - name: Desplegar carpeta de version en gh-pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          destination_dir: ${{ steps.version.outputs.next_tag }}
-          keep_files: true
+      - name: Guardar carpeta de version en main
+        run: |
+          mkdir -p "${{ steps.version.outputs.next_tag }}"
+          cp -r dist/* "${{ steps.version.outputs.next_tag }}/"
 
       - name: Build raiz (latest)
         env:
           VITE_BASE_PATH: /tienda-ucjc-descubrimiento/
         run: npm run build
 
-      - name: Desplegar en raiz de gh-pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          keep_files: true
-
-      - name: Crear y subir tag al repositorio
+      - name: Guardar raiz (latest) en main
         run: |
-          git tag ${{ steps.version.outputs.next_tag }}
-          git push origin ${{ steps.version.outputs.next_tag }}
+          cp -r dist/* ./
+          touch .nojekyll
+
+      - name: Commit, tag y push a main
+        run: |
+          git config user.name "release-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m "release ${{ steps.version.outputs.next_tag }} [skip ci]"
+            git tag "${{ steps.version.outputs.next_tag }}"
+            git push origin main --tags
+          fi
