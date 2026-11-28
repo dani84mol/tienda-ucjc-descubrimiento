@@ -2,32 +2,11 @@ import { CATEGORIAS, TALLAS, PRODUCTOS } from './productos.js';
 import { ESTILOS } from './estilos.js';
 
 export const EVENTO_ANADIR_AL_CARRITO = 'ucjc:descubrimiento:anadir-al-carrito@1';
-// Contrato firmado: Descubrimiento informa a Compra y Datos del estado de la campaña.
 export const EVENTO_CAMPANA_CAMBIADA = 'ucjc:descubrimiento:campana-cambiada@1';
+export const EVENTO_MONEDA_CAMBIADA = 'ucjc:descubrimiento:moneda-cambiada@1';
 
 const PRECIO_MAXIMO = { EUR: 60, USD: 70, GBP: 50 };
 const TASA_GBP = 0.8345;
-
-const ESTILOS_AVISO = `
-  .aviso {
-    position: fixed;
-    bottom: 1.5rem;
-    left: 50%;
-    transform: translate(-50%, 1rem);
-    padding: .75rem 1.25rem;
-    border-radius: 8px;
-    color: white;
-    font-weight: 600;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, .2);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .25s, transform .25s;
-    z-index: 2000;
-  }
-  .aviso.visible { opacity: 1; transform: translate(-50%, 0); }
-  .aviso.anadido { background: #15803d; }
-  .aviso.eliminado { background: #b91c1c; }
-`;
 
 class UcjcDescubrimiento extends HTMLElement {
   constructor() {
@@ -50,6 +29,14 @@ class UcjcDescubrimiento extends HTMLElement {
       esAdmin: false,
       listaProductos: PRODUCTOS.map((p) => ({ ...p, tallas: [...p.tallas] })),
     };
+  }
+
+  emitirEvento(nombre, detail) {
+    if (window.ucjcCampus?.version === '1' && typeof window.ucjcCampus.emitir === 'function') {
+      window.ucjcCampus.emitir(nombre, detail);
+    } else {
+      window.dispatchEvent(new CustomEvent(nombre, { detail }));
+    }
   }
 
   precioBaseProducto(producto) {
@@ -89,27 +76,35 @@ class UcjcDescubrimiento extends HTMLElement {
   }
 
   notificarCampana() {
-    window.dispatchEvent(new CustomEvent(EVENTO_CAMPANA_CAMBIADA, {
-      detail: {
-        activa: this.estado.modoBlackFriday,
-        codigo: 'black-friday-2026',
-        etiqueta: 'Black Friday UCJC',
-        momento: new Date().toISOString(),
-      },
-    }));
+    this.emitirEvento(EVENTO_CAMPANA_CAMBIADA, {
+      activa: this.estado.modoBlackFriday,
+      codigo: 'black-friday-2026',
+      etiqueta: 'Black Friday UCJC',
+      momento: new Date().toISOString(),
+    });
+  }
+
+  notificarMoneda() {
+    this.emitirEvento(EVENTO_MONEDA_CAMBIADA, {
+      moneda: this.estado.moneda,
+      momento: new Date().toISOString(),
+    });
   }
 
   connectedCallback() {
+    if (window.ucjcCampus?.version !== '1') {
+      console.warn('[descubrimiento] sin campus v1; usando valores de reserva');
+    }
     this.pintarEstructura();
     this.conectarEventos();
     this.pintarProductos();
-    // El contrato exige anunciar el estado inicial de la campaña.
     this.notificarCampana();
+    this.notificarMoneda();
   }
 
   pintarEstructura() {
     this.shadowRoot.innerHTML = `
-      <style>${ESTILOS}${ESTILOS_AVISO}</style>
+      <style>${ESTILOS}</style>
 
       <header class="barra-superior">
         <div class="lateral lateral-izq">
@@ -276,7 +271,6 @@ class UcjcDescubrimiento extends HTMLElement {
       boton.setAttribute('aria-pressed', String(activo));
       this.pintarProductos();
       this.actualizarModal();
-      // Compra recibe el nuevo estado para mostrar Black Friday.
       this.notificarCampana();
     });
 
@@ -294,6 +288,7 @@ class UcjcDescubrimiento extends HTMLElement {
       raiz.querySelector('.valor-precio').textContent = this.formatearPrecio(this.estado.precioMax);
       this.pintarProductos();
       this.actualizarModal();
+      this.notificarMoneda();
     });
 
     raiz.querySelector('.barra-busqueda').addEventListener('submit', (e) => {
@@ -496,16 +491,14 @@ class UcjcDescubrimiento extends HTMLElement {
   }
 
   anadirAlCarrito(producto) {
-    // Reafirmar la campaña justo antes del precio: útil si Compra se ha montado después.
     this.notificarCampana();
-    window.dispatchEvent(new CustomEvent(EVENTO_ANADIR_AL_CARRITO, {
-      detail: {
-        productoId: producto.id,
-        nombre: producto.nombre,
-        precio: this.precioEnEuros(producto),
-        cantidad: 1,
-      },
-    }));
+    this.notificarMoneda();
+    this.emitirEvento(EVENTO_ANADIR_AL_CARRITO, {
+      productoId: producto.id,
+      nombre: producto.nombre,
+      precio: this.precioEnEuros(producto),
+      cantidad: 1,
+    });
     console.log(`Emitido ${EVENTO_ANADIR_AL_CARRITO} 🛒`, producto.nombre);
     this.mostrarAviso(`✅ Producto añadido: ${producto.nombre} — ${this.formatearPrecio(this.precioProducto(producto))}`, 'anadido');
   }

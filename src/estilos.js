@@ -1,54 +1,60 @@
-// Estilos del componente. Van dentro del Shadow DOM, así no chocan con los de otros equipos.
-// Se conservan todas las clases y atributos que usa main.js; solo cambia la presentación.
+// Estilos del componente dentro del Shadow DOM.
+// Cumple ucjc-presentacion-campus@1: todas las propiedades consumen --ucjc-* con valor de reserva.
 export const ESTILOS = `
   /* ==========================================================
-     1. TOKENS (consumen --ucjc-* de la tienda con valor de reserva)
+     1. TOKENS OFICIALES DEL SHELL (ucjc-presentacion-campus@1)
      ========================================================== */
   :host {
-    /* Marca UCJC */
+    /* Marca y estados */
     --azul: var(--ucjc-brand, #16307a);
     --azul-claro: var(--ucjc-brand-bright, #2f6bff);
-    --azul-suave: var(--ucjc-brand-soft, #eef3ff);
-    --oro: var(--ucjc-accent, #e9b10c);
-    --oro-brillo: var(--ucjc-accent-bright, #f6d365);
+    --azul-suave: color-mix(in srgb, var(--azul) 8%, var(--superficie));
+    --oro: var(--ucjc-brand-bright, #e9b10c);
+    --oro-brillo: color-mix(in srgb, var(--oro) 75%, var(--superficie));
 
-    /* Superficies y texto */
-    --fondo: var(--ucjc-bg, #f6f7f9);
+    /* Superficies, bordes y texto */
+    --fondo: var(--ucjc-fog, #f6f7f9);
     --superficie: var(--ucjc-panel, #ffffff);
-    --gris: var(--ucjc-surface-alt, #eff1f5);
-    --borde: var(--ucjc-border, #e4e7ec);
-    --borde-fuerte: var(--ucjc-border-strong, #cfd5df);
-    --texto: var(--ucjc-text, #0b1324);
-    --texto-2: var(--ucjc-text-muted, #5b6578);
-    --texto-3: var(--ucjc-text-subtle, #8f98a8);
-    --texto-inverso: var(--ucjc-text-inverse, #ffffff);
+    --gris: var(--ucjc-mist, #eff1f5);
+    --borde: var(--ucjc-edge, #e4e7ec);
+    --borde-fuerte: color-mix(in srgb, var(--ucjc-ink, #0b1324) 22%, var(--superficie));
+    --texto: var(--ucjc-ink, #0b1324);
+    --texto-2: var(--ucjc-muted, #5b6578);
+    --texto-3: color-mix(in srgb, var(--ucjc-muted, #5b6578) 70%, var(--superficie));
+    --texto-inverso: var(--ucjc-panel, #ffffff);
 
-    /* Semánticos (descuentos, edición, borrado y campaña) */
-    --peligro: var(--ucjc-danger, #c81e1e);
-    --peligro-suave: var(--ucjc-danger-soft, #fef2f2);
-    --peligro-borde: var(--ucjc-danger-border, #fecaca);
-    --aviso: var(--ucjc-warning, #b45309);
-    --aviso-intenso: var(--ucjc-warning-bright, #f59e0b);
-    --aviso-suave: var(--ucjc-warning-soft, #fff8eb);
-    --aviso-borde: var(--ucjc-warning-border, #fde4b3);
-    --campana-bg: var(--ucjc-campaign-bg, #0c0c0e);
-    --campana-texto: var(--ucjc-campaign-text, #ffffff);
-    --campana-texto-suave: var(--ucjc-campaign-text-muted, #a1a1aa);
+    /* Semánticos */
+    --exito: var(--ucjc-leaf, #15803d);
+    --peligro: var(--ucjc-warn, #c81e1e);
+    --peligro-suave: color-mix(in srgb, var(--peligro) 8%, var(--superficie));
+    --peligro-borde: color-mix(in srgb, var(--peligro) 25%, var(--superficie));
+    --aviso: var(--ucjc-warn, #b45309);
+    --aviso-intenso: color-mix(in srgb, var(--aviso) 85%, var(--superficie));
+    --aviso-suave: color-mix(in srgb, var(--aviso) 10%, var(--superficie));
+    --aviso-borde: color-mix(in srgb, var(--aviso) 28%, var(--superficie));
+    --campana-bg: var(--ucjc-ink, #0c0c0e);
+    --campana-texto: var(--ucjc-panel, #ffffff);
+    --campana-texto-suave: color-mix(in srgb, var(--ucjc-panel, #ffffff) 68%, transparent);
 
-    /* Sistema */
-    --r-sm: var(--ucjc-radius-sm, 8px);
-    --r-md: var(--ucjc-radius, 12px);
-    --r-lg: var(--ucjc-radius-lg, 18px);
-    --r-full: var(--ucjc-radius-full, 999px);
-    --sombra-sm: var(--ucjc-shadow-sm, 0 1px 2px rgba(11, 19, 36, .06));
-    --sombra-md: var(--ucjc-shadow-md, 0 12px 28px -12px rgba(11, 19, 36, .22));
-    --sombra-lg: var(--ucjc-shadow-lg, 0 28px 60px -18px rgba(11, 19, 36, .35));
-    --rapido: 160ms cubic-bezier(.22, 1, .36, 1);
-    --medio: 240ms cubic-bezier(.22, 1, .36, 1);
+    /* Sistema: tipografía, radios, espaciados y curvas */
+    --fuente-sans: var(--ucjc-font-sans, "Segoe UI", sans-serif);
+    --fuente-display: var(--ucjc-font-display, Georgia, serif);
+    --r-sm: var(--ucjc-radius, 6px);
+    --r-md: calc(var(--ucjc-radius, 6px) * 1.5);
+    --r-lg: calc(var(--ucjc-radius, 6px) * 2);
+    --r-full: 999px;
+    --espacio: var(--ucjc-space, 0.75rem);
+    --espacio-lg: var(--ucjc-space-lg, 1.25rem);
+    --ancho-max: var(--ucjc-max, 72rem);
+    --sombra-sm: 0 1px 2px color-mix(in srgb, var(--texto) 6%, transparent);
+    --sombra-md: 0 12px 28px -12px color-mix(in srgb, var(--texto) 22%, transparent);
+    --sombra-lg: 0 28px 60px -18px color-mix(in srgb, var(--texto) 35%, transparent);
+    --rapido: 160ms var(--ucjc-ease, cubic-bezier(.22, 1, .36, 1));
+    --medio: 240ms var(--ucjc-ease, cubic-bezier(.22, 1, .36, 1));
 
     display: block;
     min-height: 100vh;
-    font-family: var(--ucjc-font-sans, "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif);
+    font-family: var(--fuente-sans);
     font-size: 15px;
     line-height: 1.5;
     color: var(--texto);
@@ -70,7 +76,7 @@ export const ESTILOS = `
     grid-template-columns: 180px 1fr 180px;
     align-items: center;
     gap: 1rem;
-    padding: .85rem 2rem;
+    padding: var(--espacio) 2rem;
     background:
       radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--azul-claro) 35%, transparent), transparent 55%),
       var(--azul);
@@ -103,7 +109,6 @@ export const ESTILOS = `
     border-radius: var(--r-full);
     background: var(--superficie);
   }
-  /* Lupa pintada con máscara para heredar exactamente el token --texto-3 */
   .barra-busqueda::before {
     content: "";
     position: absolute;
@@ -156,7 +161,7 @@ export const ESTILOS = `
   }
   .selector-moneda span { margin-right: .35rem; }
   .selector-moneda button {
-    padding: .3rem .75rem;
+    padding: .3rem var(--espacio);
     border: 1px solid transparent;
     border-radius: var(--r-full);
     background: var(--gris);
@@ -203,9 +208,10 @@ export const ESTILOS = `
   }
   .bf-titulo { display: flex; flex-direction: column; gap: .15rem; }
   .bf-titulo strong {
+    font-family: var(--fuente-display);
     font-size: 1.15rem;
     font-weight: 800;
-    letter-spacing: .22em;
+    letter-spacing: .16em;
     background: linear-gradient(90deg, var(--campana-texto) 30%, var(--oro-brillo));
     -webkit-background-clip: text;
     background-clip: text;
@@ -213,7 +219,7 @@ export const ESTILOS = `
   }
   .bf-titulo span { color: var(--campana-texto-suave); font-size: .85rem; }
   .boton-black-friday {
-    padding: .65rem 1.25rem;
+    padding: .65rem var(--espacio-lg);
     border: 1px solid var(--oro);
     border-radius: var(--r-full);
     background: var(--oro);
@@ -297,12 +303,11 @@ export const ESTILOS = `
     display: grid;
     grid-template-columns: 236px 1fr;
     gap: 2.5rem;
-    max-width: 1320px;
+    max-width: var(--ancho-max);
     margin: 0 auto;
     padding: 2rem 2rem 4rem;
   }
 
-  /* Filtros: sin caja, secciones separadas por líneas finas */
   .filtros {
     position: sticky;
     top: 5.5rem;
@@ -310,13 +315,13 @@ export const ESTILOS = `
     display: flex;
     flex-direction: column;
   }
-  .filtros section { padding: 1.25rem 0; border-bottom: 1px solid var(--borde); }
+  .filtros section { padding: var(--espacio-lg) 0; border-bottom: 1px solid var(--borde); }
   .filtros section:first-child { padding-top: 0; }
   .filtros h3 {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin: 0 0 .75rem;
+    margin: 0 0 var(--espacio);
     font-size: .72rem;
     font-weight: 700;
     letter-spacing: .1em;
@@ -366,7 +371,7 @@ export const ESTILOS = `
   }
 
   .limpiar {
-    margin-top: 1.25rem;
+    margin-top: var(--espacio-lg);
     padding: .6rem;
     border: none;
     border-radius: var(--r-sm);
@@ -378,13 +383,12 @@ export const ESTILOS = `
   }
   .limpiar:hover { background: var(--azul-suave); }
 
-  /* Cabecera de resultados */
   .cabecera-resultados {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
-    margin-bottom: 1.25rem;
+    margin-bottom: var(--espacio-lg);
   }
   .cabecera-resultados p {
     margin: 0;
@@ -412,7 +416,7 @@ export const ESTILOS = `
   .rejilla {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1.5rem 1.25rem;
+    gap: 1.5rem var(--espacio-lg);
   }
   .tarjeta {
     display: flex;
@@ -429,11 +433,10 @@ export const ESTILOS = `
     box-shadow: var(--sombra-md);
   }
 
-  /* Imagen: el texto "Imagen" se oculta y se muestra un icono de bolsa con token */
   .tarjeta .imagen {
     position: relative;
     aspect-ratio: 4 / 5;
-    border-radius: calc(var(--r-lg) - .45rem);
+    border-radius: var(--r-md);
     font-size: 0;
     background: linear-gradient(160deg, var(--fondo), var(--gris));
   }
@@ -469,7 +472,7 @@ export const ESTILOS = `
     color: var(--texto);
     font-variant-numeric: tabular-nums;
   }
-  .tarjeta .acciones { display: flex; gap: .45rem; margin-top: auto; padding-top: .75rem; }
+  .tarjeta .acciones { display: flex; gap: .45rem; margin-top: auto; padding-top: var(--espacio); }
   .tarjeta .acciones button {
     padding: .6rem .5rem;
     border-radius: var(--r-md);
@@ -508,7 +511,6 @@ export const ESTILOS = `
     font-weight: 500;
   }
 
-  /* Precios con descuento (Black Friday) */
   .precios-tarjeta, .precios-modal { display: flex; align-items: baseline; flex-wrap: wrap; gap: .25rem .55rem; }
   .precio-anterior { text-decoration: line-through; color: var(--texto-3); font-size: .85rem; }
   .tarjeta .precio.precio-rebajado,
@@ -525,7 +527,7 @@ export const ESTILOS = `
   }
 
   /* ==========================================================
-     9. MODAL (ficha y formulario de administración)
+     9. MODAL Y AVISO FLOTANTE
      ========================================================== */
   .modal-overlay {
     position: fixed;
@@ -546,11 +548,18 @@ export const ESTILOS = `
     max-height: calc(100vh - 2rem);
     overflow-y: auto;
     padding: 2rem;
-    border-radius: calc(var(--r-lg) + 4px);
+    border-radius: var(--r-lg);
     background: var(--superficie);
     box-shadow: var(--sombra-lg);
   }
-  .modal-contenido h3 { margin: 0; font-size: 1.5rem; font-weight: 700; letter-spacing: -.015em; color: var(--texto); }
+  .modal-contenido h3 {
+    margin: 0;
+    font-family: var(--fuente-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -.015em;
+    color: var(--texto);
+  }
   .modal-contenido p { margin: 0; color: var(--texto-2); }
   .modal-contenido p strong { color: var(--texto); font-weight: 600; }
   .modal-contenido .precio { font-size: 1.6rem; font-weight: 800; letter-spacing: -.02em; color: var(--azul); }
@@ -579,6 +588,25 @@ export const ESTILOS = `
   }
   .btn-cerrar-modal:hover { background: var(--borde); }
 
+  .aviso {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translate(-50%, 1rem);
+    padding: var(--espacio) var(--espacio-lg);
+    border-radius: var(--r-md);
+    color: var(--texto-inverso);
+    font-weight: 600;
+    box-shadow: var(--sombra-md);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--medio), transform var(--medio);
+    z-index: 2000;
+  }
+  .aviso.visible { opacity: 1; transform: translate(-50%, 0); }
+  .aviso.anadido { background: var(--exito); }
+  .aviso.eliminado { background: var(--peligro); }
+
   /* ==========================================================
      10. FOCO Y ANIMACIONES (sin !important)
      ========================================================== */
@@ -606,7 +634,7 @@ export const ESTILOS = `
     .btn-eliminar { transition: background var(--rapido), color var(--rapido), border-color var(--rapido); }
     .tarjeta {
       transition: transform var(--medio), box-shadow var(--medio), border-color var(--medio);
-      animation: entrar 320ms cubic-bezier(.22, 1, .36, 1) both;
+      animation: entrar 320ms var(--ucjc-ease, cubic-bezier(.22, 1, .36, 1)) both;
     }
     .tarjeta:nth-child(2) { animation-delay: 30ms; }
     .tarjeta:nth-child(3) { animation-delay: 60ms; }
@@ -614,7 +642,7 @@ export const ESTILOS = `
     .tarjeta:nth-child(n+5) { animation-delay: 120ms; }
     .tarjeta .imagen { transition: transform var(--medio); }
     .modal-overlay { animation: aparecer 180ms ease-out; }
-    .modal-contenido { animation: subir 260ms cubic-bezier(.22, 1, .36, 1); }
+    .modal-contenido { animation: subir 260ms var(--ucjc-ease, cubic-bezier(.22, 1, .36, 1)); }
   }
 
   @keyframes entrar { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
@@ -622,7 +650,7 @@ export const ESTILOS = `
   @keyframes subir { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
 
   /* ==========================================================
-     11. TEMA BLACK FRIDAY (solo tokens, sin colores a mano)
+     11. TEMA BLACK FRIDAY
      ========================================================== */
   :host([data-black-friday]) .barra-superior {
     background:
@@ -666,12 +694,12 @@ export const ESTILOS = `
      12. RESPONSIVE
      ========================================================== */
   @media (max-width: 960px) {
-    .barra-superior { padding: .8rem 1.25rem; grid-template-columns: 140px 1fr 140px; }
-    .selector-moneda, .franja-black-friday, .barra-admin, .navegacion { padding-left: 1.25rem; padding-right: 1.25rem; }
-    .cuerpo { grid-template-columns: 200px 1fr; gap: 1.5rem; padding: 1.5rem 1.25rem 3rem; }
+    .barra-superior { padding: .8rem var(--espacio-lg); grid-template-columns: 140px 1fr 140px; }
+    .selector-moneda, .franja-black-friday, .barra-admin, .navegacion { padding-left: var(--espacio-lg); padding-right: var(--espacio-lg); }
+    .cuerpo { grid-template-columns: 200px 1fr; gap: 1.5rem; padding: 1.5rem var(--espacio-lg) 3rem; }
   }
   @media (max-width: 700px) {
-    .barra-superior { position: static; grid-template-columns: 1fr 1fr; padding: .75rem 1rem; }
+    .barra-superior { position: static; grid-template-columns: 1fr 1fr; padding: var(--espacio) 1rem; }
     .barra-busqueda { grid-column: 1 / -1; grid-row: 2; }
     .selector-moneda, .franja-black-friday, .barra-admin, .navegacion { padding-left: 1rem; padding-right: 1rem; }
     .cuerpo { grid-template-columns: 1fr; padding: 1rem 1rem 3rem; }
