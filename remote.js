@@ -1,52 +1,58 @@
 (function(){let e=document.createElement(`link`).relList;if(e&&e.supports&&e.supports(`modulepreload`))return;for(let e of document.querySelectorAll(`link[rel="modulepreload"]`))n(e);new MutationObserver(e=>{for(let t of e)if(t.type===`childList`)for(let e of t.addedNodes)e.tagName===`LINK`&&e.rel===`modulepreload`&&n(e)}).observe(document,{childList:!0,subtree:!0});function t(e){let t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),t.credentials=e.crossOrigin===`use-credentials`?`include`:e.crossOrigin===`anonymous`?`omit`:`same-origin`,t}function n(e){if(e.ep)return;e.ep=!0;let n=t(e);fetch(e.href,n)}})();var e=[{id:`ropa`,nombre:`Ropa`},{id:`deporte`,nombre:`Deporte`},{id:`material`,nombre:`Material`},{id:`regalos`,nombre:`Regalos`}],t=[`XS`,`S`,`M`,`L`,`XL`],n=[{id:`prod-101`,nombre:`Camiseta Técnica UCJC`,categoria:`deporte`,precioEUR:19.99,precioUSD:21.99,precioGBP:16.68,descuentoBF:20,tallas:[`S`,`M`,`L`,`XL`]},{id:`prod-102`,nombre:`Sudadera con capucha`,categoria:`ropa`,precioEUR:39.95,precioUSD:43.95,precioGBP:33.34,descuentoBF:30,tallas:[`XS`,`S`,`M`,`L`,`XL`]},{id:`prod-103`,nombre:`Chaqueta cortavientos`,categoria:`ropa`,precioEUR:45,precioUSD:49.5,precioGBP:37.55,descuentoBF:25,tallas:[`M`,`L`,`XL`]},{id:`prod-104`,nombre:`Equipación oficial fútbol`,categoria:`deporte`,precioEUR:55,precioUSD:60.5,precioGBP:45.9,descuentoBF:35,tallas:[`S`,`M`,`L`]},{id:`prod-105`,nombre:`Mochila UCJC`,categoria:`material`,precioEUR:29.9,precioUSD:32.89,precioGBP:24.95,descuentoBF:20,tallas:[]},{id:`prod-106`,nombre:`Cuaderno A4`,categoria:`material`,precioEUR:4.5,precioUSD:4.95,precioGBP:3.76,descuentoBF:15,tallas:[]},{id:`prod-107`,nombre:`Taza de graduación`,categoria:`regalos`,precioEUR:9.95,precioUSD:10.95,precioGBP:8.3,descuentoBF:40,tallas:[]},{id:`prod-108`,nombre:`Llavero metálico`,categoria:`regalos`,precioEUR:5,precioUSD:5.5,precioGBP:4.17,descuentoBF:10,tallas:[]}],r=`
   /* ==========================================================
-     1. TOKENS (consumen --ucjc-* de la tienda con valor de reserva)
+     1. TOKENS OFICIALES DEL SHELL (ucjc-presentacion-campus@1)
      ========================================================== */
   :host {
-    /* Marca UCJC */
+    /* Marca y estados */
     --azul: var(--ucjc-brand, #16307a);
     --azul-claro: var(--ucjc-brand-bright, #2f6bff);
-    --azul-suave: var(--ucjc-brand-soft, #eef3ff);
-    --oro: var(--ucjc-accent, #e9b10c);
-    --oro-brillo: var(--ucjc-accent-bright, #f6d365);
+    --azul-suave: color-mix(in srgb, var(--azul) 8%, var(--superficie));
+    --oro: var(--ucjc-brand-bright, #e9b10c);
+    --oro-brillo: color-mix(in srgb, var(--oro) 75%, var(--superficie));
 
-    /* Superficies y texto */
-    --fondo: var(--ucjc-bg, #f6f7f9);
+    /* Superficies, bordes y texto */
+    --fondo: var(--ucjc-fog, #f6f7f9);
     --superficie: var(--ucjc-panel, #ffffff);
-    --gris: var(--ucjc-surface-alt, #eff1f5);
-    --borde: var(--ucjc-border, #e4e7ec);
-    --borde-fuerte: var(--ucjc-border-strong, #cfd5df);
-    --texto: var(--ucjc-text, #0b1324);
-    --texto-2: var(--ucjc-text-muted, #5b6578);
-    --texto-3: var(--ucjc-text-subtle, #8f98a8);
-    --texto-inverso: var(--ucjc-text-inverse, #ffffff);
+    --gris: var(--ucjc-mist, #eff1f5);
+    --borde: var(--ucjc-edge, #e4e7ec);
+    --borde-fuerte: color-mix(in srgb, var(--ucjc-ink, #0b1324) 22%, var(--superficie));
+    --texto: var(--ucjc-ink, #0b1324);
+    --texto-2: var(--ucjc-muted, #5b6578);
+    --texto-3: color-mix(in srgb, var(--ucjc-muted, #5b6578) 70%, var(--superficie));
+    --texto-inverso: var(--ucjc-panel, #ffffff);
 
-    /* Semánticos (descuentos, edición, borrado y campaña) */
-    --peligro: var(--ucjc-danger, #c81e1e);
-    --peligro-suave: var(--ucjc-danger-soft, #fef2f2);
-    --peligro-borde: var(--ucjc-danger-border, #fecaca);
-    --aviso: var(--ucjc-warning, #b45309);
-    --aviso-intenso: var(--ucjc-warning-bright, #f59e0b);
-    --aviso-suave: var(--ucjc-warning-soft, #fff8eb);
-    --aviso-borde: var(--ucjc-warning-border, #fde4b3);
-    --campana-bg: var(--ucjc-campaign-bg, #0c0c0e);
-    --campana-texto: var(--ucjc-campaign-text, #ffffff);
-    --campana-texto-suave: var(--ucjc-campaign-text-muted, #a1a1aa);
+    /* Semánticos */
+    --exito: var(--ucjc-leaf, #15803d);
+    --peligro: var(--ucjc-warn, #c81e1e);
+    --peligro-suave: color-mix(in srgb, var(--peligro) 8%, var(--superficie));
+    --peligro-borde: color-mix(in srgb, var(--peligro) 25%, var(--superficie));
+    --aviso: var(--ucjc-warn, #b45309);
+    --aviso-intenso: color-mix(in srgb, var(--aviso) 85%, var(--superficie));
+    --aviso-suave: color-mix(in srgb, var(--aviso) 10%, var(--superficie));
+    --aviso-borde: color-mix(in srgb, var(--aviso) 28%, var(--superficie));
+    --campana-bg: var(--ucjc-ink, #0c0c0e);
+    --campana-texto: var(--ucjc-panel, #ffffff);
+    --campana-texto-suave: color-mix(in srgb, var(--ucjc-panel, #ffffff) 68%, transparent);
 
-    /* Sistema */
-    --r-sm: var(--ucjc-radius-sm, 8px);
-    --r-md: var(--ucjc-radius, 12px);
-    --r-lg: var(--ucjc-radius-lg, 18px);
-    --r-full: var(--ucjc-radius-full, 999px);
-    --sombra-sm: var(--ucjc-shadow-sm, 0 1px 2px rgba(11, 19, 36, .06));
-    --sombra-md: var(--ucjc-shadow-md, 0 12px 28px -12px rgba(11, 19, 36, .22));
-    --sombra-lg: var(--ucjc-shadow-lg, 0 28px 60px -18px rgba(11, 19, 36, .35));
-    --rapido: 160ms cubic-bezier(.22, 1, .36, 1);
-    --medio: 240ms cubic-bezier(.22, 1, .36, 1);
+    /* Sistema: tipografía, radios, espaciados y curvas */
+    --fuente-sans: var(--ucjc-font-sans, "Segoe UI", sans-serif);
+    --fuente-display: var(--ucjc-font-display, Georgia, serif);
+    --r-sm: var(--ucjc-radius, 6px);
+    --r-md: calc(var(--ucjc-radius, 6px) * 1.5);
+    --r-lg: calc(var(--ucjc-radius, 6px) * 2);
+    --r-full: 999px;
+    --espacio: var(--ucjc-space, 0.75rem);
+    --espacio-lg: var(--ucjc-space-lg, 1.25rem);
+    --ancho-max: var(--ucjc-max, 72rem);
+    --sombra-sm: 0 1px 2px color-mix(in srgb, var(--texto) 6%, transparent);
+    --sombra-md: 0 12px 28px -12px color-mix(in srgb, var(--texto) 22%, transparent);
+    --sombra-lg: 0 28px 60px -18px color-mix(in srgb, var(--texto) 35%, transparent);
+    --rapido: 160ms var(--ucjc-ease, cubic-bezier(.22, 1, .36, 1));
+    --medio: 240ms var(--ucjc-ease, cubic-bezier(.22, 1, .36, 1));
 
     display: block;
     min-height: 100vh;
-    font-family: var(--ucjc-font-sans, "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif);
+    font-family: var(--fuente-sans);
     font-size: 15px;
     line-height: 1.5;
     color: var(--texto);
@@ -68,7 +74,7 @@
     grid-template-columns: 180px 1fr 180px;
     align-items: center;
     gap: 1rem;
-    padding: .85rem 2rem;
+    padding: var(--espacio) 2rem;
     background:
       radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--azul-claro) 35%, transparent), transparent 55%),
       var(--azul);
@@ -101,7 +107,6 @@
     border-radius: var(--r-full);
     background: var(--superficie);
   }
-  /* Lupa pintada con máscara para heredar exactamente el token --texto-3 */
   .barra-busqueda::before {
     content: "";
     position: absolute;
@@ -154,7 +159,7 @@
   }
   .selector-moneda span { margin-right: .35rem; }
   .selector-moneda button {
-    padding: .3rem .75rem;
+    padding: .3rem var(--espacio);
     border: 1px solid transparent;
     border-radius: var(--r-full);
     background: var(--gris);
@@ -201,9 +206,10 @@
   }
   .bf-titulo { display: flex; flex-direction: column; gap: .15rem; }
   .bf-titulo strong {
+    font-family: var(--fuente-display);
     font-size: 1.15rem;
     font-weight: 800;
-    letter-spacing: .22em;
+    letter-spacing: .16em;
     background: linear-gradient(90deg, var(--campana-texto) 30%, var(--oro-brillo));
     -webkit-background-clip: text;
     background-clip: text;
@@ -211,7 +217,7 @@
   }
   .bf-titulo span { color: var(--campana-texto-suave); font-size: .85rem; }
   .boton-black-friday {
-    padding: .65rem 1.25rem;
+    padding: .65rem var(--espacio-lg);
     border: 1px solid var(--oro);
     border-radius: var(--r-full);
     background: var(--oro);
@@ -295,12 +301,11 @@
     display: grid;
     grid-template-columns: 236px 1fr;
     gap: 2.5rem;
-    max-width: 1320px;
+    max-width: var(--ancho-max);
     margin: 0 auto;
     padding: 2rem 2rem 4rem;
   }
 
-  /* Filtros: sin caja, secciones separadas por líneas finas */
   .filtros {
     position: sticky;
     top: 5.5rem;
@@ -308,13 +313,13 @@
     display: flex;
     flex-direction: column;
   }
-  .filtros section { padding: 1.25rem 0; border-bottom: 1px solid var(--borde); }
+  .filtros section { padding: var(--espacio-lg) 0; border-bottom: 1px solid var(--borde); }
   .filtros section:first-child { padding-top: 0; }
   .filtros h3 {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin: 0 0 .75rem;
+    margin: 0 0 var(--espacio);
     font-size: .72rem;
     font-weight: 700;
     letter-spacing: .1em;
@@ -364,7 +369,7 @@
   }
 
   .limpiar {
-    margin-top: 1.25rem;
+    margin-top: var(--espacio-lg);
     padding: .6rem;
     border: none;
     border-radius: var(--r-sm);
@@ -376,13 +381,12 @@
   }
   .limpiar:hover { background: var(--azul-suave); }
 
-  /* Cabecera de resultados */
   .cabecera-resultados {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
-    margin-bottom: 1.25rem;
+    margin-bottom: var(--espacio-lg);
   }
   .cabecera-resultados p {
     margin: 0;
@@ -410,7 +414,7 @@
   .rejilla {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1.5rem 1.25rem;
+    gap: 1.5rem var(--espacio-lg);
   }
   .tarjeta {
     display: flex;
@@ -427,11 +431,10 @@
     box-shadow: var(--sombra-md);
   }
 
-  /* Imagen: el texto "Imagen" se oculta y se muestra un icono de bolsa con token */
   .tarjeta .imagen {
     position: relative;
     aspect-ratio: 4 / 5;
-    border-radius: calc(var(--r-lg) - .45rem);
+    border-radius: var(--r-md);
     font-size: 0;
     background: linear-gradient(160deg, var(--fondo), var(--gris));
   }
@@ -467,7 +470,7 @@
     color: var(--texto);
     font-variant-numeric: tabular-nums;
   }
-  .tarjeta .acciones { display: flex; gap: .45rem; margin-top: auto; padding-top: .75rem; }
+  .tarjeta .acciones { display: flex; gap: .45rem; margin-top: auto; padding-top: var(--espacio); }
   .tarjeta .acciones button {
     padding: .6rem .5rem;
     border-radius: var(--r-md);
@@ -506,7 +509,6 @@
     font-weight: 500;
   }
 
-  /* Precios con descuento (Black Friday) */
   .precios-tarjeta, .precios-modal { display: flex; align-items: baseline; flex-wrap: wrap; gap: .25rem .55rem; }
   .precio-anterior { text-decoration: line-through; color: var(--texto-3); font-size: .85rem; }
   .tarjeta .precio.precio-rebajado,
@@ -523,7 +525,7 @@
   }
 
   /* ==========================================================
-     9. MODAL (ficha y formulario de administración)
+     9. MODAL Y AVISO FLOTANTE
      ========================================================== */
   .modal-overlay {
     position: fixed;
@@ -544,11 +546,18 @@
     max-height: calc(100vh - 2rem);
     overflow-y: auto;
     padding: 2rem;
-    border-radius: calc(var(--r-lg) + 4px);
+    border-radius: var(--r-lg);
     background: var(--superficie);
     box-shadow: var(--sombra-lg);
   }
-  .modal-contenido h3 { margin: 0; font-size: 1.5rem; font-weight: 700; letter-spacing: -.015em; color: var(--texto); }
+  .modal-contenido h3 {
+    margin: 0;
+    font-family: var(--fuente-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -.015em;
+    color: var(--texto);
+  }
   .modal-contenido p { margin: 0; color: var(--texto-2); }
   .modal-contenido p strong { color: var(--texto); font-weight: 600; }
   .modal-contenido .precio { font-size: 1.6rem; font-weight: 800; letter-spacing: -.02em; color: var(--azul); }
@@ -577,6 +586,25 @@
   }
   .btn-cerrar-modal:hover { background: var(--borde); }
 
+  .aviso {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translate(-50%, 1rem);
+    padding: var(--espacio) var(--espacio-lg);
+    border-radius: var(--r-md);
+    color: var(--texto-inverso);
+    font-weight: 600;
+    box-shadow: var(--sombra-md);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--medio), transform var(--medio);
+    z-index: 2000;
+  }
+  .aviso.visible { opacity: 1; transform: translate(-50%, 0); }
+  .aviso.anadido { background: var(--exito); }
+  .aviso.eliminado { background: var(--peligro); }
+
   /* ==========================================================
      10. FOCO Y ANIMACIONES (sin !important)
      ========================================================== */
@@ -604,7 +632,7 @@
     .btn-eliminar { transition: background var(--rapido), color var(--rapido), border-color var(--rapido); }
     .tarjeta {
       transition: transform var(--medio), box-shadow var(--medio), border-color var(--medio);
-      animation: entrar 320ms cubic-bezier(.22, 1, .36, 1) both;
+      animation: entrar 320ms var(--ucjc-ease, cubic-bezier(.22, 1, .36, 1)) both;
     }
     .tarjeta:nth-child(2) { animation-delay: 30ms; }
     .tarjeta:nth-child(3) { animation-delay: 60ms; }
@@ -612,7 +640,7 @@
     .tarjeta:nth-child(n+5) { animation-delay: 120ms; }
     .tarjeta .imagen { transition: transform var(--medio); }
     .modal-overlay { animation: aparecer 180ms ease-out; }
-    .modal-contenido { animation: subir 260ms cubic-bezier(.22, 1, .36, 1); }
+    .modal-contenido { animation: subir 260ms var(--ucjc-ease, cubic-bezier(.22, 1, .36, 1)); }
   }
 
   @keyframes entrar { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
@@ -620,7 +648,7 @@
   @keyframes subir { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
 
   /* ==========================================================
-     11. TEMA BLACK FRIDAY (solo tokens, sin colores a mano)
+     11. TEMA BLACK FRIDAY
      ========================================================== */
   :host([data-black-friday]) .barra-superior {
     background:
@@ -664,12 +692,12 @@
      12. RESPONSIVE
      ========================================================== */
   @media (max-width: 960px) {
-    .barra-superior { padding: .8rem 1.25rem; grid-template-columns: 140px 1fr 140px; }
-    .selector-moneda, .franja-black-friday, .barra-admin, .navegacion { padding-left: 1.25rem; padding-right: 1.25rem; }
-    .cuerpo { grid-template-columns: 200px 1fr; gap: 1.5rem; padding: 1.5rem 1.25rem 3rem; }
+    .barra-superior { padding: .8rem var(--espacio-lg); grid-template-columns: 140px 1fr 140px; }
+    .selector-moneda, .franja-black-friday, .barra-admin, .navegacion { padding-left: var(--espacio-lg); padding-right: var(--espacio-lg); }
+    .cuerpo { grid-template-columns: 200px 1fr; gap: 1.5rem; padding: 1.5rem var(--espacio-lg) 3rem; }
   }
   @media (max-width: 700px) {
-    .barra-superior { position: static; grid-template-columns: 1fr 1fr; padding: .75rem 1rem; }
+    .barra-superior { position: static; grid-template-columns: 1fr 1fr; padding: var(--espacio) 1rem; }
     .barra-busqueda { grid-column: 1 / -1; grid-row: 2; }
     .selector-moneda, .franja-black-friday, .barra-admin, .navegacion { padding-left: 1rem; padding-right: 1rem; }
     .cuerpo { grid-template-columns: 1fr; padding: 1rem 1rem 3rem; }
@@ -679,29 +707,10 @@
     .tarjeta .acciones { flex-direction: column; }
     .btn-ver { min-width: 0; }
   }
-`,i=`ucjc:descubrimiento:anadir-al-carrito@1`,a=`ucjc:descubrimiento:campana-cambiada@1`,o={EUR:60,USD:70,GBP:50},s=.8345,c=`
-  .aviso {
-    position: fixed;
-    bottom: 1.5rem;
-    left: 50%;
-    transform: translate(-50%, 1rem);
-    padding: .75rem 1.25rem;
-    border-radius: 8px;
-    color: white;
-    font-weight: 600;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, .2);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .25s, transform .25s;
-    z-index: 2000;
-  }
-  .aviso.visible { opacity: 1; transform: translate(-50%, 0); }
-  .aviso.anadido { background: #15803d; }
-  .aviso.eliminado { background: #b91c1c; }
-`,l=class extends HTMLElement{constructor(){super(),this.attachShadow({mode:`open`}),this.estado=this.estadoInicial()}estadoInicial(){return{busqueda:``,categoria:`todo`,precioMax:o.EUR,moneda:`EUR`,modoBlackFriday:!1,tallas:[],orden:`relevancia`,productoSeleccionado:null,usuarioActivo:null,esAdmin:!1,listaProductos:n.map(e=>({...e,tallas:[...e.tallas]}))}}precioBaseProducto(e){return this.estado.moneda===`USD`?e.precioUSD:this.estado.moneda===`GBP`?e.precioGBP??Math.floor(Math.round(e.precioEUR*100)*s+1e-9)/100:e.precioEUR}precioProducto(e){let t=this.precioBaseProducto(e);if(!this.estado.modoBlackFriday)return t;let n=Number(e.descuentoBF)||0;return Math.round(t*(100-n))/100}precioEnEuros(e){let t=e.precioEUR;if(!this.estado.modoBlackFriday)return t;let n=Number(e.descuentoBF)||0;return Math.round(t*(100-n))/100}detallePrecio(e){let t=this.formatearPrecio(this.precioProducto(e));return!this.estado.modoBlackFriday||!e.descuentoBF?`<span class="precio">${t}</span>`:`<span class="precio-anterior">${this.formatearPrecio(this.precioBaseProducto(e))}</span>
+`,i=`ucjc:descubrimiento:anadir-al-carrito@1`,a=`ucjc:descubrimiento:campana-cambiada@1`,o=`ucjc:descubrimiento:moneda-cambiada@1`,s={EUR:60,USD:70,GBP:50},c=.8345,l=class extends HTMLElement{constructor(){super(),this.attachShadow({mode:`open`}),this.estado=this.estadoInicial()}estadoInicial(){return{busqueda:``,categoria:`todo`,precioMax:s.EUR,moneda:`EUR`,modoBlackFriday:!1,tallas:[],orden:`relevancia`,productoSeleccionado:null,usuarioActivo:null,esAdmin:!1,listaProductos:n.map(e=>({...e,tallas:[...e.tallas]}))}}emitirEvento(e,t){window.ucjcCampus?.version===`1`&&typeof window.ucjcCampus.emitir==`function`?window.ucjcCampus.emitir(e,t):window.dispatchEvent(new CustomEvent(e,{detail:t}))}precioBaseProducto(e){return this.estado.moneda===`USD`?e.precioUSD:this.estado.moneda===`GBP`?e.precioGBP??Math.floor(Math.round(e.precioEUR*100)*c+1e-9)/100:e.precioEUR}precioProducto(e){let t=this.precioBaseProducto(e);if(!this.estado.modoBlackFriday)return t;let n=Number(e.descuentoBF)||0;return Math.round(t*(100-n))/100}precioEnEuros(e){let t=e.precioEUR;if(!this.estado.modoBlackFriday)return t;let n=Number(e.descuentoBF)||0;return Math.round(t*(100-n))/100}detallePrecio(e){let t=this.formatearPrecio(this.precioProducto(e));return!this.estado.modoBlackFriday||!e.descuentoBF?`<span class="precio">${t}</span>`:`<span class="precio-anterior">${this.formatearPrecio(this.precioBaseProducto(e))}</span>
       <span class="precio precio-rebajado">${t}</span>
-      <span class="descuento-bf">-${e.descuentoBF}%</span>`}formatearPrecio(e){return new Intl.NumberFormat(`es-ES`,{style:`currency`,currency:this.estado.moneda}).format(e)}notificarCampana(){window.dispatchEvent(new CustomEvent(a,{detail:{activa:this.estado.modoBlackFriday,codigo:`black-friday-2026`,etiqueta:`Black Friday UCJC`,momento:new Date().toISOString()}}))}connectedCallback(){this.pintarEstructura(),this.conectarEventos(),this.pintarProductos(),this.notificarCampana()}pintarEstructura(){this.shadowRoot.innerHTML=`
-      <style>${r}${c}</style>
+      <span class="descuento-bf">-${e.descuentoBF}%</span>`}formatearPrecio(e){return new Intl.NumberFormat(`es-ES`,{style:`currency`,currency:this.estado.moneda}).format(e)}notificarCampana(){this.emitirEvento(a,{activa:this.estado.modoBlackFriday,codigo:`black-friday-2026`,etiqueta:`Black Friday UCJC`,momento:new Date().toISOString()})}notificarMoneda(){this.emitirEvento(o,{moneda:this.estado.moneda,momento:new Date().toISOString()})}connectedCallback(){window.ucjcCampus?.version!==`1`&&console.warn(`[descubrimiento] sin campus v1; usando valores de reserva`),this.pintarEstructura(),this.conectarEventos(),this.pintarProductos(),this.notificarCampana(),this.notificarMoneda()}pintarEstructura(){this.shadowRoot.innerHTML=`
+      <style>${r}</style>
 
       <header class="barra-superior">
         <div class="lateral lateral-izq">
@@ -747,7 +756,7 @@
           </section>
           <section>
             <h3>Precio máximo: <span class="valor-precio">${this.formatearPrecio(this.estado.precioMax)}</span></h3>
-            <input type="range" name="precio" min="0" max="${o.EUR}" step="5" value="${o.EUR}" aria-label="Precio máximo" />
+            <input type="range" name="precio" min="0" max="${s.EUR}" step="5" value="${s.EUR}" aria-label="Precio máximo" />
           </section>
           <section>
             <h3>Talla</h3>
@@ -814,7 +823,7 @@
               `}
         </div>
       </div>
-    `}conectarEventos(){let e=this.shadowRoot;e.querySelector(`.boton-black-friday`).addEventListener(`click`,()=>{this.estado.modoBlackFriday=!this.estado.modoBlackFriday;let t=this.estado.modoBlackFriday;this.toggleAttribute(`data-black-friday`,t);let n=e.querySelector(`.boton-black-friday`);n.textContent=t?`Desactivar Black Friday`:`Activar Black Friday`,n.setAttribute(`aria-pressed`,String(t)),this.pintarProductos(),this.actualizarModal(),this.notificarCampana()}),e.querySelector(`.selector-moneda`).addEventListener(`click`,t=>{let n=t.target.closest(`button[data-moneda]`);if(!n)return;this.estado.moneda=n.dataset.moneda,this.estado.precioMax=o[this.estado.moneda],e.querySelectorAll(`.selector-moneda button`).forEach(e=>e.setAttribute(`aria-pressed`,String(e.dataset.moneda===this.estado.moneda)));let r=e.querySelector(`input[name="precio"]`);r.max=this.estado.precioMax,r.value=this.estado.precioMax,e.querySelector(`.valor-precio`).textContent=this.formatearPrecio(this.estado.precioMax),this.pintarProductos(),this.actualizarModal()}),e.querySelector(`.barra-busqueda`).addEventListener(`submit`,e=>{e.preventDefault(),this.estado.busqueda=e.target.q.value.trim().toLowerCase(),this.pintarProductos()}),e.querySelector(`.navegacion`).addEventListener(`click`,e=>{let t=e.target.closest(`[data-categoria]`);t&&this.cambiarCategoria(t.dataset.categoria)}),e.querySelectorAll(`input[name="categoria"]`).forEach(e=>e.addEventListener(`change`,()=>this.cambiarCategoria(e.value))),e.querySelector(`input[name="precio"]`).addEventListener(`input`,t=>{this.estado.precioMax=Number(t.target.value),e.querySelector(`.valor-precio`).textContent=this.formatearPrecio(this.estado.precioMax),this.pintarProductos()}),e.querySelector(`.tallas`).addEventListener(`click`,e=>{let t=e.target.closest(`[data-talla]`);if(!t)return;let n=t.dataset.talla,r=this.estado.tallas.includes(n);this.estado.tallas=r?this.estado.tallas.filter(e=>e!==n):[...this.estado.tallas,n],t.setAttribute(`aria-pressed`,String(!r)),this.pintarProductos()}),e.querySelector(`select[name="orden"]`).addEventListener(`change`,e=>{this.estado.orden=e.target.value,this.pintarProductos()}),e.querySelector(`.limpiar`).addEventListener(`click`,()=>this.limpiarFiltros()),e.addEventListener(`click`,e=>{e.target.closest(`[data-accion="nuevo-producto"]`)&&(this.estado.productoSeleccionado={id:`nuevo`,nombre:``,precioEUR:0,precioUSD:0,precioGBP:0,categoria:`ropa`,tallas:[]},this.actualizarModal())}),e.querySelector(`.rejilla`).addEventListener(`click`,e=>{let t=e.target.closest(`button[data-accion]`);if(!t)return;let n=t.dataset.id,r=this.estado.listaProductos.find(e=>e.id===n);t.dataset.accion===`anadir`&&this.anadirAlCarrito(r),t.dataset.accion===`ver`&&(this.estado.productoSeleccionado={...r,editando:!1},this.actualizarModal()),t.dataset.accion===`editar`&&(this.estado.productoSeleccionado={...r,editando:!0},this.actualizarModal()),t.dataset.accion===`eliminar`&&confirm(`¿Estás seguro de eliminar "${r.nombre}"?`)&&(this.estado.listaProductos=this.estado.listaProductos.filter(e=>e.id!==n),this.pintarProductos(),this.mostrarAviso(`🗑️ Producto eliminado: ${r.nombre}`,`eliminado`))}),e.querySelector(`#modal-container`).addEventListener(`click`,e=>{e.target.closest(`.modal-contenido`)&&!e.target.closest(`[data-accion="cerrar"]`)?e.target.closest(`[data-accion="pasar-a-editar"]`)&&(this.estado.productoSeleccionado.editando=!0,this.actualizarModal()):(this.estado.productoSeleccionado=null,this.actualizarModal())}),e.querySelector(`#modal-container`).addEventListener(`submit`,e=>{if(e.preventDefault(),e.target.id===`form-producto`){let t=new FormData(e.target),n=t.get(`nombre`),r=parseFloat(t.get(`precioEUR`)),i=parseFloat(t.get(`precioUSD`)),a=parseFloat(t.get(`precioGBP`));if(![r,i,a].every(e=>Number.isFinite(e)&&e>=0))return;let o=t.get(`categoria`);if(this.estado.productoSeleccionado.id===`nuevo`){let e={id:`prod-${Date.now()}`,nombre:n,precioEUR:r,precioUSD:i,precioGBP:a,categoria:o,tallas:[`M`,`L`]};this.estado.listaProductos.push(e)}else{let e=this.estado.productoSeleccionado.id,t=this.estado.listaProductos.find(t=>t.id===e);t&&(t.nombre=n,t.precioEUR=r,t.precioUSD=i,t.precioGBP=a,t.categoria=o)}this.estado.productoSeleccionado=null,this.actualizarModal(),this.pintarProductos()}})}cambiarCategoria(e){this.estado.categoria=e;let t=this.shadowRoot;t.querySelectorAll(`.navegacion button`).forEach(t=>t.setAttribute(`aria-current`,String(t.dataset.categoria===e))),t.querySelector(`input[name="categoria"][value="${e}"]`).checked=!0,this.pintarProductos()}limpiarFiltros(){let{moneda:e,listaProductos:t,usuarioActivo:n,modoBlackFriday:r}=this.estado;this.estado={...this.estadoInicial(),moneda:e,listaProductos:t,usuarioActivo:n,modoBlackFriday:r,precioMax:o[e]};let i=this.shadowRoot;i.querySelector(`input[name="q"]`).value=``,i.querySelector(`input[name="precio"]`).max=this.estado.precioMax,i.querySelector(`input[name="precio"]`).value=this.estado.precioMax,i.querySelector(`.valor-precio`).textContent=this.formatearPrecio(this.estado.precioMax),i.querySelector(`select[name="orden"]`).value=`relevancia`,i.querySelectorAll(`.tallas button`).forEach(e=>e.setAttribute(`aria-pressed`,`false`)),this.cambiarCategoria(`todo`)}productosFiltrados(){let{busqueda:e,categoria:t,precioMax:n,tallas:r,orden:i,listaProductos:a}=this.estado,o=a.filter(i=>(t===`todo`||i.categoria===t)&&this.precioProducto(i)<=n&&(!e||i.nombre.toLowerCase().includes(e))&&(r.length===0||r.some(e=>i.tallas.includes(e))));return i===`precio-asc`&&o.sort((e,t)=>this.precioProducto(e)-this.precioProducto(t)),i===`precio-desc`&&o.sort((e,t)=>this.precioProducto(t)-this.precioProducto(e)),i===`nombre`&&o.sort((e,t)=>e.nombre.localeCompare(t.nombre)),o}pintarProductos(){let e=this.productosFiltrados(),t=this.shadowRoot;t.querySelector(`.contador`).textContent=`${e.length} producto${e.length===1?``:`s`}`,t.querySelector(`.rejilla`).innerHTML=e.length?e.map(e=>`
+    `}conectarEventos(){let e=this.shadowRoot;e.querySelector(`.boton-black-friday`).addEventListener(`click`,()=>{this.estado.modoBlackFriday=!this.estado.modoBlackFriday;let t=this.estado.modoBlackFriday;this.toggleAttribute(`data-black-friday`,t);let n=e.querySelector(`.boton-black-friday`);n.textContent=t?`Desactivar Black Friday`:`Activar Black Friday`,n.setAttribute(`aria-pressed`,String(t)),this.pintarProductos(),this.actualizarModal(),this.notificarCampana()}),e.querySelector(`.selector-moneda`).addEventListener(`click`,t=>{let n=t.target.closest(`button[data-moneda]`);if(!n)return;this.estado.moneda=n.dataset.moneda,this.estado.precioMax=s[this.estado.moneda],e.querySelectorAll(`.selector-moneda button`).forEach(e=>e.setAttribute(`aria-pressed`,String(e.dataset.moneda===this.estado.moneda)));let r=e.querySelector(`input[name="precio"]`);r.max=this.estado.precioMax,r.value=this.estado.precioMax,e.querySelector(`.valor-precio`).textContent=this.formatearPrecio(this.estado.precioMax),this.pintarProductos(),this.actualizarModal(),this.notificarMoneda()}),e.querySelector(`.barra-busqueda`).addEventListener(`submit`,e=>{e.preventDefault(),this.estado.busqueda=e.target.q.value.trim().toLowerCase(),this.pintarProductos()}),e.querySelector(`.navegacion`).addEventListener(`click`,e=>{let t=e.target.closest(`[data-categoria]`);t&&this.cambiarCategoria(t.dataset.categoria)}),e.querySelectorAll(`input[name="categoria"]`).forEach(e=>e.addEventListener(`change`,()=>this.cambiarCategoria(e.value))),e.querySelector(`input[name="precio"]`).addEventListener(`input`,t=>{this.estado.precioMax=Number(t.target.value),e.querySelector(`.valor-precio`).textContent=this.formatearPrecio(this.estado.precioMax),this.pintarProductos()}),e.querySelector(`.tallas`).addEventListener(`click`,e=>{let t=e.target.closest(`[data-talla]`);if(!t)return;let n=t.dataset.talla,r=this.estado.tallas.includes(n);this.estado.tallas=r?this.estado.tallas.filter(e=>e!==n):[...this.estado.tallas,n],t.setAttribute(`aria-pressed`,String(!r)),this.pintarProductos()}),e.querySelector(`select[name="orden"]`).addEventListener(`change`,e=>{this.estado.orden=e.target.value,this.pintarProductos()}),e.querySelector(`.limpiar`).addEventListener(`click`,()=>this.limpiarFiltros()),e.addEventListener(`click`,e=>{e.target.closest(`[data-accion="nuevo-producto"]`)&&(this.estado.productoSeleccionado={id:`nuevo`,nombre:``,precioEUR:0,precioUSD:0,precioGBP:0,categoria:`ropa`,tallas:[]},this.actualizarModal())}),e.querySelector(`.rejilla`).addEventListener(`click`,e=>{let t=e.target.closest(`button[data-accion]`);if(!t)return;let n=t.dataset.id,r=this.estado.listaProductos.find(e=>e.id===n);t.dataset.accion===`anadir`&&this.anadirAlCarrito(r),t.dataset.accion===`ver`&&(this.estado.productoSeleccionado={...r,editando:!1},this.actualizarModal()),t.dataset.accion===`editar`&&(this.estado.productoSeleccionado={...r,editando:!0},this.actualizarModal()),t.dataset.accion===`eliminar`&&confirm(`¿Estás seguro de eliminar "${r.nombre}"?`)&&(this.estado.listaProductos=this.estado.listaProductos.filter(e=>e.id!==n),this.pintarProductos(),this.mostrarAviso(`🗑️ Producto eliminado: ${r.nombre}`,`eliminado`))}),e.querySelector(`#modal-container`).addEventListener(`click`,e=>{e.target.closest(`.modal-contenido`)&&!e.target.closest(`[data-accion="cerrar"]`)?e.target.closest(`[data-accion="pasar-a-editar"]`)&&(this.estado.productoSeleccionado.editando=!0,this.actualizarModal()):(this.estado.productoSeleccionado=null,this.actualizarModal())}),e.querySelector(`#modal-container`).addEventListener(`submit`,e=>{if(e.preventDefault(),e.target.id===`form-producto`){let t=new FormData(e.target),n=t.get(`nombre`),r=parseFloat(t.get(`precioEUR`)),i=parseFloat(t.get(`precioUSD`)),a=parseFloat(t.get(`precioGBP`));if(![r,i,a].every(e=>Number.isFinite(e)&&e>=0))return;let o=t.get(`categoria`);if(this.estado.productoSeleccionado.id===`nuevo`){let e={id:`prod-${Date.now()}`,nombre:n,precioEUR:r,precioUSD:i,precioGBP:a,categoria:o,tallas:[`M`,`L`]};this.estado.listaProductos.push(e)}else{let e=this.estado.productoSeleccionado.id,t=this.estado.listaProductos.find(t=>t.id===e);t&&(t.nombre=n,t.precioEUR=r,t.precioUSD=i,t.precioGBP=a,t.categoria=o)}this.estado.productoSeleccionado=null,this.actualizarModal(),this.pintarProductos()}})}cambiarCategoria(e){this.estado.categoria=e;let t=this.shadowRoot;t.querySelectorAll(`.navegacion button`).forEach(t=>t.setAttribute(`aria-current`,String(t.dataset.categoria===e))),t.querySelector(`input[name="categoria"][value="${e}"]`).checked=!0,this.pintarProductos()}limpiarFiltros(){let{moneda:e,listaProductos:t,usuarioActivo:n,modoBlackFriday:r}=this.estado;this.estado={...this.estadoInicial(),moneda:e,listaProductos:t,usuarioActivo:n,modoBlackFriday:r,precioMax:s[e]};let i=this.shadowRoot;i.querySelector(`input[name="q"]`).value=``,i.querySelector(`input[name="precio"]`).max=this.estado.precioMax,i.querySelector(`input[name="precio"]`).value=this.estado.precioMax,i.querySelector(`.valor-precio`).textContent=this.formatearPrecio(this.estado.precioMax),i.querySelector(`select[name="orden"]`).value=`relevancia`,i.querySelectorAll(`.tallas button`).forEach(e=>e.setAttribute(`aria-pressed`,`false`)),this.cambiarCategoria(`todo`)}productosFiltrados(){let{busqueda:e,categoria:t,precioMax:n,tallas:r,orden:i,listaProductos:a}=this.estado,o=a.filter(i=>(t===`todo`||i.categoria===t)&&this.precioProducto(i)<=n&&(!e||i.nombre.toLowerCase().includes(e))&&(r.length===0||r.some(e=>i.tallas.includes(e))));return i===`precio-asc`&&o.sort((e,t)=>this.precioProducto(e)-this.precioProducto(t)),i===`precio-desc`&&o.sort((e,t)=>this.precioProducto(t)-this.precioProducto(e)),i===`nombre`&&o.sort((e,t)=>e.nombre.localeCompare(t.nombre)),o}pintarProductos(){let e=this.productosFiltrados(),t=this.shadowRoot;t.querySelector(`.contador`).textContent=`${e.length} producto${e.length===1?``:`s`}`,t.querySelector(`.rejilla`).innerHTML=e.length?e.map(e=>`
           <article class="tarjeta">
             <div class="imagen">Imagen</div>
             <div class="info">
@@ -832,4 +841,4 @@
                   `:``}
             </div>
           </article>
-        `).join(``):`<p class="vacio">No hay productos con estos filtros.</p>`}anadirAlCarrito(e){this.notificarCampana(),window.dispatchEvent(new CustomEvent(i,{detail:{productoId:e.id,nombre:e.nombre,precio:this.precioEnEuros(e),cantidad:1}})),console.log(`Emitido ${i} 🛒`,e.nombre),this.mostrarAviso(`✅ Producto añadido: ${e.nombre} — ${this.formatearPrecio(this.precioProducto(e))}`,`anadido`)}mostrarAviso(e,t){let n=this.shadowRoot.querySelector(`.aviso`);n.textContent=e,n.className=`aviso ${t} visible`,clearTimeout(this.temporizadorAviso),this.temporizadorAviso=setTimeout(()=>n.classList.remove(`visible`),2500)}};customElements.get(`ucjc-descubrimiento`)||customElements.define(`ucjc-descubrimiento`,l);
+        `).join(``):`<p class="vacio">No hay productos con estos filtros.</p>`}anadirAlCarrito(e){this.notificarCampana(),this.notificarMoneda(),this.emitirEvento(i,{productoId:e.id,nombre:e.nombre,precio:this.precioEnEuros(e),cantidad:1}),console.log(`Emitido ${i} 🛒`,e.nombre),this.mostrarAviso(`✅ Producto añadido: ${e.nombre} — ${this.formatearPrecio(this.precioProducto(e))}`,`anadido`)}mostrarAviso(e,t){let n=this.shadowRoot.querySelector(`.aviso`);n.textContent=e,n.className=`aviso ${t} visible`,clearTimeout(this.temporizadorAviso),this.temporizadorAviso=setTimeout(()=>n.classList.remove(`visible`),2500)}};customElements.get(`ucjc-descubrimiento`)||customElements.define(`ucjc-descubrimiento`,l);
